@@ -920,18 +920,8 @@ export const ReceiptView: React.FC<ReceiptViewProps> = ({
               <span className="font-bold text-slate-700 text-[11px]">{order.deliveryAgent.transport || 'Vélo Express Campus'}</span>
             </div>
             <div className="flex flex-col xs:flex-row xs:justify-between items-start xs:items-center gap-1 border-t border-slate-200/60 pt-1.5 mt-1">
-              <div>
-                <span className="text-slate-500 font-medium text-[11px] block">Livreur Attitré :</span>
-                <span className="font-extrabold text-orange-600 text-[11px]">{order.deliveryAgent.name}</span>
-              </div>
-              <a
-                href={`tel:${order.deliveryAgent.phone.replace(/\s+/g, '')}`}
-                className="bg-orange-100 hover:bg-orange-200 text-orange-700 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors"
-                title="Appeler le livreur"
-              >
-                <Phone className="w-3 h-3" />
-                <span>Appeler</span>
-              </a>
+              <span className="text-slate-500 font-medium text-[11px]">Livreur Attitré :</span>
+              <span className="font-extrabold text-orange-600 text-[11px]">{order.deliveryAgent.name}</span>
             </div>
           </div>
         </div>
