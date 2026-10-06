@@ -8,8 +8,7 @@ import { MenuItemModal } from './components/MenuItemModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { ReceiptView } from './components/ReceiptView';
-import { DeliveryTracker } from './components/DeliveryTracker';
-import { StudentPassModal } from './components/StudentPassModal';
+import { FlutterBottomNavBar } from './components/FlutterBottomNavBar';
 import { AdminPanel } from './components/AdminPanel';
 import { QuotaNoticeModal } from './components/QuotaNoticeModal';
 import { StudentRegistrationModal } from './components/StudentRegistrationModal';
@@ -155,7 +154,7 @@ const SAMPLE_ARCHIVED_ORDER_2: Order = {
 
 export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [activeTab, setActiveTab] = useState<'menu' | 'receipts' | 'tracking' | 'pass' | 'admin'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'receipts' | 'admin'>('menu');
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuLoading, setIsMenuLoading] = useState(false);
@@ -233,7 +232,6 @@ export default function App() {
     setCartItems(editCartItems);
     setActiveTab('menu');
     setIsCartOpen(true);
-    setIsTrackingView(false);
   };
 
   // Modals state
@@ -242,7 +240,6 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isQuotaNoticeOpen, setIsQuotaNoticeOpen] = useState(false);
   const [isActiveOrderNoticeOpen, setIsActiveOrderNoticeOpen] = useState(false);
-  const [isTrackingView, setIsTrackingView] = useState(false);
   const [isFlutterModalOpen, setIsFlutterModalOpen] = useState(false);
 
   // Handle Reordering past archived orders
@@ -411,10 +408,9 @@ export default function App() {
     setActiveOrder(newOrder);
     setCartItems([]);
     setIsCheckoutOpen(false);
-    setIsTrackingView(false);
     
-    // Redirect directly to real-time order tracking (mandatory after validation)
-    setActiveTab('tracking');
+    // Redirection immédiate vers le reçu officiel avec QR code
+    setActiveTab('receipts');
   };
 
   const handleUpdateOrderStatus = (orderId: string, newStatus: DeliveryStatus) => {
@@ -442,10 +438,7 @@ export default function App() {
         cartItemCount={totalCartCount}
         maxAllowed={MAX_FREE_ITEMS}
         activeTab={activeTab}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          setIsTrackingView(false);
-        }}
+        setActiveTab={setActiveTab}
         onOpenCart={() => {
           if (activePendingOrder) {
             setIsActiveOrderNoticeOpen(true);
@@ -459,7 +452,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6 pb-10 sm:pb-14">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8 py-3 sm:py-6 pb-28 md:pb-14">
         
         {/* VIEW 1: MENU & DISHES */}
         {activeTab === 'menu' && (
@@ -500,12 +493,11 @@ export default function App() {
                   <button
                     onClick={() => {
                       setActiveOrder(activePendingOrder);
-                      setIsTrackingView(true);
                       setActiveTab('receipts');
                     }}
                     className="flex-1 md:flex-initial bg-white text-orange-600 hover:bg-orange-50 font-black px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs uppercase tracking-wider transition-all shadow-xs"
                   >
-                    Suivre en direct →
+                    Consulter mon reçu officiel →
                   </button>
                   <button
                     onClick={() => handleResetOrder(activePendingOrder.id)}
@@ -695,13 +687,12 @@ export default function App() {
                     <button
                       onClick={() => {
                         setActiveOrder(activePendingOrder);
-                        setIsTrackingView(true);
-                        setActiveTab('tracking');
+                        setActiveTab('receipts');
                       }}
-                      className="w-full bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-black py-2 rounded-xl uppercase tracking-wider flex items-center justify-center gap-1 transition-colors"
+                      className="w-full bg-orange-600 hover:bg-orange-700 text-white text-[11px] font-black py-2 rounded-xl uppercase tracking-wider flex items-center justify-center gap-1 transition-colors"
                     >
-                      <Truck className="w-3.5 h-3.5" />
-                      <span>Suivre la livraison →</span>
+                      <Receipt className="w-3.5 h-3.5" />
+                      <span>Consulter mon reçu officiel →</span>
                     </button>
                   </div>
                 )}
@@ -748,11 +739,14 @@ export default function App() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setActiveTab('tracking')}
-                      className="bg-amber-600 hover:bg-amber-700 text-white font-black px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl uppercase tracking-wider text-[10px] sm:text-[11px] shrink-0 transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+                      onClick={() => {
+                        if (activePendingOrder) setActiveOrder(activePendingOrder);
+                        setActiveTab('receipts');
+                      }}
+                      className="bg-orange-600 hover:bg-orange-700 text-white font-black px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl uppercase tracking-wider text-[10px] sm:text-[11px] shrink-0 transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
                     >
-                      <Truck className="w-3.5 h-3.5 text-white" />
-                      <span>Suivre Ma Livraison</span>
+                      <Receipt className="w-3.5 h-3.5 text-white" />
+                      <span>Consulter Mon Reçu</span>
                     </button>
                   </div>
                 ) : (
@@ -860,10 +854,7 @@ export default function App() {
                   {orders.slice(0, 4).map((ord) => (
                     <button
                       key={ord.id}
-                      onClick={() => {
-                        setActiveOrder(ord);
-                        setIsTrackingView(false);
-                      }}
+                      onClick={() => setActiveOrder(ord)}
                       className={`px-3 py-1.5 rounded-xl text-[11px] font-mono font-bold transition-all shrink-0 ${
                         activeOrder?.id === ord.id
                           ? 'bg-slate-900 text-orange-400 font-extrabold'
@@ -886,10 +877,6 @@ export default function App() {
                   setActiveOrder(selectedOrd);
                   setReceiptsSubTab('current');
                 }}
-                onTrackOrder={(selectedOrd) => {
-                  setActiveOrder(selectedOrd);
-                  setActiveTab('tracking');
-                }}
                 onReorder={handleReorder}
                 onBackToMenu={() => setActiveTab('menu')}
                 onShowActiveReceipt={() => setReceiptsSubTab('current')}
@@ -900,7 +887,6 @@ export default function App() {
               activeOrder ? (
                 <ReceiptView
                   order={activeOrder}
-                  onTrackOrder={() => setActiveTab('tracking')}
                   onBackToMenu={() => setActiveTab('menu')}
                   onResetOrder={handleResetOrder}
                   onEditOrder={handleEditPendingOrder}
@@ -933,45 +919,6 @@ export default function App() {
           </div>
         )}
 
-        {/* VIEW: SUIVI DE LIVRAISON EN DIRECT */}
-        {activeTab === 'tracking' && (
-          <div className="space-y-6 animate-fade-in">
-            {activePendingOrder || activeOrder ? (
-              <DeliveryTracker
-                order={activePendingOrder || activeOrder!}
-                onUpdateStatus={handleUpdateOrderStatus}
-                onBackToMenu={() => setActiveTab('menu')}
-                onResetOrder={handleResetOrder}
-              />
-            ) : (
-              <div className="text-center py-16 bg-white rounded-3xl border-2 border-orange-100 p-8 shadow-sm max-w-xl mx-auto">
-                <div className="w-16 h-16 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Truck className="w-8 h-8" />
-                </div>
-                <h3 className="text-lg font-black text-slate-800">Aucune livraison en cours</h3>
-                <p className="text-xs text-slate-500 mt-2 mb-6">
-                  Vous n'avez pas de commande en cours d'acheminement actuellement.
-                  Effectuez votre commande gratuite (3 articles max) pour suivre son livreur en temps réel.
-                </p>
-                <button
-                  onClick={() => setActiveTab('menu')}
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95"
-                >
-                  Commander Mon Menu Gratuite
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* VIEW 3: STUDENT INTEGRATION PASS */}
-        {activeTab === 'pass' && (
-          <StudentPassModal
-            onExploreMenu={() => setActiveTab('menu')}
-            studentProfile={studentProfile}
-          />
-        )}
-
         {/* VIEW 4: ADMIN RESTO & KITCHEN PANEL */}
         {activeTab === 'admin' && (
           <AdminPanel
@@ -997,7 +944,6 @@ export default function App() {
         onViewOrder={() => {
           if (activePendingOrder) {
             setActiveOrder(activePendingOrder);
-            setIsTrackingView(true);
             setActiveTab('receipts');
           }
         }}
@@ -1048,39 +994,20 @@ export default function App() {
         onClose={() => setIsFlutterModalOpen(false)}
       />
 
-      {/* Floating Mobile Cart Action Bar: Appears on mobile only when dishes are selected */}
-      {totalCartCount > 0 && activeTab === 'menu' && !isCartOpen && !isCheckoutOpen && (
-        <div className="fixed bottom-4 left-3 right-3 z-30 max-w-md mx-auto sm:hidden animate-fade-in">
-          <button
-            onClick={() => {
-              if (activePendingOrder) {
-                setIsActiveOrderNoticeOpen(true);
-              } else {
-                setIsCartOpen(true);
-              }
-            }}
-            className="w-full bg-slate-900/95 backdrop-blur-md hover:bg-black text-white p-3.5 rounded-2xl shadow-2xl border-2 border-orange-500/70 flex items-center justify-between gap-3 active:scale-98 transition-all"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center font-black text-xs shadow-xs font-mono">
-                {totalCartCount}/3
-              </div>
-              <div className="text-left">
-                <div className="text-xs font-black uppercase tracking-wider text-white">
-                  {totalCartCount === 1 ? '1 Plat Sélectionné' : `${totalCartCount} Plats Sélectionnés`}
-                </div>
-                <div className="text-[10px] text-emerald-400 font-bold">
-                  100% Subventionné • 0 FCFA
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider bg-orange-500 hover:bg-orange-600 text-white px-3.5 py-1.5 rounded-xl shadow-xs transition-colors">
-              <span>Voir Panier</span>
-              <span className="text-sm">→</span>
-            </div>
-          </button>
-        </div>
-      )}
+      {/* Native Mobile Bottom Navigation Bar (Optimized for all smartphones) */}
+      <FlutterBottomNavBar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        cartItemCount={totalCartCount}
+        onOpenCart={() => {
+          if (activePendingOrder) {
+            setIsActiveOrderNoticeOpen(true);
+          } else {
+            setIsCartOpen(true);
+          }
+        }}
+        hasActiveOrder={!!activePendingOrder}
+      />
 
       {/* Footer */}
       <footer className="border-t-2 border-orange-200/60 bg-orange-100/50 py-8 text-xs text-slate-500 mt-auto">

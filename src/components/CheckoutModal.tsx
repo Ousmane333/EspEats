@@ -294,7 +294,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 ⚠️ Attention : Validation Définitive
               </div>
               <p className="text-[11px] font-medium leading-relaxed text-amber-800">
-                Une fois votre commande <strong>validée</strong>, elle est automatiquement verrouillée et transmise à la cuisine du restaurant universitaire et à votre livreur. <strong>Vous ne pourrez plus revenir en arrière ni la modifier.</strong> Vous serez directement réorienté(e) vers l'écran de <strong>suivi en direct</strong>.
+                Une fois votre commande <strong>validée</strong>, elle est automatiquement verrouillée et transmise à la cuisine du restaurant universitaire et à votre livreur. <strong>Vous ne pourrez plus revenir en arrière ni la modifier.</strong> Vous serez directement réorienté(e) vers votre <strong>reçu officiel avec QR code téléchargeable</strong>.
               </p>
             </div>
           </div>

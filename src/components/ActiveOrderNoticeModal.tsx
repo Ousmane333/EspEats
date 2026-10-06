@@ -54,8 +54,8 @@ export const ActiveOrderNoticeModal: React.FC<ActiveOrderNoticeModalProps> = ({
 
           <div className="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-left text-slate-700 space-y-1.5 font-medium">
             <div className="font-black text-amber-800 uppercase tracking-wider">🔒 Statut de votre commande</div>
-            <p>• Votre repas est en cours de préparation / livraison par le restaurant ESP.</p>
-            <p>• Suivez l'arrivée de votre livreur étudiant en direct sur la carte du campus.</p>
+            <p>• Votre repas est en cours de préparation par le restaurant universitaire ESP.</p>
+            <p>• Votre reçu officiel avec QR code d'authentification est disponible.</p>
           </div>
 
           <div className="flex flex-col gap-2.5 pt-2">
@@ -67,7 +67,7 @@ export const ActiveOrderNoticeModal: React.FC<ActiveOrderNoticeModalProps> = ({
               className="w-full flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-black py-3.5 px-4 rounded-xl text-xs shadow-md uppercase tracking-wider transition-all hover:scale-[1.01]"
             >
               <Clock className="w-4 h-4" />
-              <span>Suivre ma commande en direct ({activeOrder.orderNumber})</span>
+              <span>Consulter mon reçu officiel ({activeOrder.orderNumber})</span>
             </button>
           </div>
         </div>

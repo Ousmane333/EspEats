@@ -20,13 +20,13 @@ export const FlutterBottomNavBar: React.FC<FlutterBottomNavBarProps> = ({
   return (
     <nav 
       aria-label="Navigation mobile"
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-slate-900/95 backdrop-blur-xl text-white border-t border-slate-800/80 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] px-3 py-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-slate-900/95 backdrop-blur-xl text-white border-t border-slate-800/80 shadow-[0_-8px_30px_rgba(0,0,0,0.3)] px-3 py-1.5 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
     >
       <div className="max-w-md mx-auto grid grid-cols-3 items-center relative">
         {/* 1. Menu Tab */}
         <button
           onClick={() => setActiveTab('menu')}
-          className={`flex flex-col items-center justify-center py-1 rounded-xl transition-all duration-200 ${
+          className={`flex flex-col items-center justify-center py-1.5 min-h-[48px] rounded-xl transition-all duration-200 active:scale-95 ${
             activeTab === 'menu'
               ? 'text-orange-400 font-black'
               : 'text-slate-400 hover:text-slate-200 font-bold'
@@ -46,7 +46,7 @@ export const FlutterBottomNavBar: React.FC<FlutterBottomNavBarProps> = ({
         <div className="flex flex-col items-center justify-center -mt-6">
           <button
             onClick={onOpenCart}
-            className={`relative p-3.5 rounded-full shadow-xl transition-all duration-200 active:scale-90 flex items-center justify-center border-4 border-slate-900 ${
+            className={`relative p-3.5 min-w-[52px] min-h-[52px] rounded-full shadow-xl transition-all duration-200 active:scale-90 flex items-center justify-center border-4 border-slate-900 ${
               cartItemCount > 0
                 ? 'bg-gradient-to-tr from-orange-500 via-orange-600 to-amber-500 shadow-orange-500/40 scale-105 animate-pulse'
                 : 'bg-slate-800 text-slate-300 shadow-slate-900/50 hover:bg-slate-700'
@@ -68,7 +68,7 @@ export const FlutterBottomNavBar: React.FC<FlutterBottomNavBarProps> = ({
         {/* 3. Reçus Tab */}
         <button
           onClick={() => setActiveTab('receipts')}
-          className={`flex flex-col items-center justify-center py-1 rounded-xl transition-all duration-200 ${
+          className={`flex flex-col items-center justify-center py-1.5 min-h-[48px] rounded-xl transition-all duration-200 active:scale-95 ${
             activeTab === 'receipts'
               ? 'text-orange-400 font-black'
               : 'text-slate-400 hover:text-slate-200 font-bold'

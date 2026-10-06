@@ -28,7 +28,7 @@ import html2canvas from 'html2canvas';
 
 interface ReceiptViewProps {
   order: Order;
-  onTrackOrder: (order: Order) => void;
+  onTrackOrder?: (order: Order) => void;
   onBackToMenu: () => void;
   onResetOrder?: (orderId: string) => void;
   onEditOrder?: (order: Order) => void;
@@ -701,10 +701,10 @@ export const ReceiptView: React.FC<ReceiptViewProps> = ({
           )}
 
           <button
-            onClick={() => onTrackOrder(order)}
+            onClick={onBackToMenu}
             className="flex-1 sm:flex-initial bg-white hover:bg-orange-50 text-orange-600 font-black px-4 sm:px-5 py-2.5 rounded-xl text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 transition-all active:scale-95 shadow-xs"
           >
-            <span>Suivre livraison</span>
+            <span>Retour au Menu</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

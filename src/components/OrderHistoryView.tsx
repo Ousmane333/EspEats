@@ -21,7 +21,7 @@ interface OrderHistoryViewProps {
   orders: Order[];
   activeOrder: Order | null;
   onSelectOrder: (order: Order) => void;
-  onTrackOrder: (order: Order) => void;
+  onTrackOrder?: (order: Order) => void;
   onReorder: (order: Order) => void;
   onBackToMenu: () => void;
   onShowActiveReceipt: () => void;
@@ -32,7 +32,6 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
   orders,
   activeOrder,
   onSelectOrder,
-  onTrackOrder,
   onReorder,
   onBackToMenu,
   onShowActiveReceipt,
@@ -284,22 +283,12 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap">
-                    {order.status !== 'delivered' && (
-                      <button
-                        onClick={() => onTrackOrder(order)}
-                        className="bg-orange-100 hover:bg-orange-200 text-orange-800 font-black px-3.5 py-2 rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 transition-colors"
-                      >
-                        <Truck className="w-3.5 h-3.5 text-orange-600" />
-                        <span>Suivre Livraison</span>
-                      </button>
-                    )}
-
                     <button
                       onClick={() => onSelectOrder(order)}
                       className="bg-orange-500 hover:bg-orange-600 text-white font-black px-4 py-2 rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all hover:scale-105 active:scale-95"
                     >
                       <Receipt className="w-3.5 h-3.5" />
-                      <span>Voir le Reçu</span>
+                      <span>Voir le Reçu Officiel</span>
                     </button>
                   </div>
                 </div>
