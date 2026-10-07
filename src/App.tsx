@@ -582,16 +582,9 @@ export default function App() {
                       setActiveOrder(activePendingOrder);
                       setActiveTab('receipts');
                     }}
-                    className="flex-1 md:flex-initial bg-white text-orange-600 hover:bg-orange-50 font-black px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs uppercase tracking-wider transition-all shadow-xs"
+                    className="w-full md:w-auto bg-white text-orange-600 hover:bg-orange-50 font-black px-4 py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs uppercase tracking-wider transition-all shadow-xs flex items-center justify-center gap-1.5"
                   >
                     Consulter mon reçu officiel →
-                  </button>
-                  <button
-                    onClick={() => handleResetOrder(activePendingOrder.id)}
-                    className="flex-1 md:flex-initial bg-slate-900 hover:bg-black text-white font-black px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-xs"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 text-orange-400" />
-                    <span>Réinitialiser</span>
                   </button>
                 </div>
               </div>
