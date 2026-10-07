@@ -33,7 +33,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               <span className="text-xl sm:text-2xl">👋</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
-              Composez votre repas universitaire 100% offert au Restaurant Campus ESP.
+              Menu du jour ESP : <strong>1 Fast Food</strong> + <strong>1 Accompagnant</strong> + <strong>1 Dessert</strong> (100% Offert).
             </p>
           </div>
 
@@ -68,13 +68,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
             <div className="my-2.5 flex items-baseline justify-between">
               <span className="text-2xl sm:text-3xl font-black text-orange-600 font-mono tracking-tight">
-                {cartCount} <span className="text-sm sm:text-base text-slate-400 font-normal">/ 3 plats</span>
+                {cartCount} <span className="text-sm sm:text-base text-slate-400 font-normal">/ 3 choix</span>
               </span>
               <span className="text-[11px] text-slate-500 font-medium">
-                {cartCount === 0 && 'Choisissez jusqu\'à 3 articles'}
-                {cartCount === 1 && 'Encore 2 articles offerts'}
-                {cartCount === 2 && 'Plus qu\'1 article offert'}
-                {cartCount >= 3 && 'Menu complet prêt à valider'}
+                {cartCount === 0 && '1 Fast-Food + 1 Accompagnant + 1 Dessert'}
+                {cartCount === 1 && 'Fast-Food choisi ! Choisissez l’accompagnant'}
+                {cartCount === 2 && 'Accompagnant choisi ! Choisissez le dessert'}
+                {cartCount >= 3 && 'Formule complète prête à commander'}
               </span>
             </div>
 
@@ -131,7 +131,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             onClick={onExploreMenu}
             className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black px-5 sm:px-7 py-3 rounded-xl sm:rounded-2xl shadow-sm text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95"
           >
-            <span>{cartCount > 0 ? `Finaliser mon menu (${cartCount}/3)` : 'Choisir mes 3 plats offerts'}</span>
+            <span>{cartCount === 3 ? 'Commander directement (3/3)' : cartCount > 0 ? `Continuer ma formule (${cartCount}/3)` : 'Composer ma formule offerte'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 

@@ -17,7 +17,9 @@ import { ThreeBackground } from './components/ThreeBackground';
 import { OrderHistoryView } from './components/OrderHistoryView';
 import { FlutterExportModal } from './components/FlutterExportModal';
 import { MenuGridSkeleton } from './components/MenuCardSkeleton';
-import { Search, Utensils, GlassWater, Pizza, IceCream, Sparkles, CheckCircle2, Lock, RotateCcw, AlertTriangle, History, Receipt, Smartphone, Truck } from 'lucide-react';
+import { FormulaStepper } from './components/FormulaStepper';
+import { FormulaCompletionModal } from './components/FormulaCompletionModal';
+import { Search, Utensils, GlassWater, Pizza, IceCream, Sparkles, CheckCircle2, Lock, RotateCcw, AlertTriangle, History, Receipt, Smartphone, Truck, ArrowRight, Check } from 'lucide-react';
 
 const MAX_FREE_ITEMS = 3;
 
@@ -155,9 +157,25 @@ const SAMPLE_ARCHIVED_ORDER_2: Order = {
 export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [activeTab, setActiveTab] = useState<'menu' | 'receipts' | 'admin'>('menu');
-  const [selectedCategory, setSelectedCategory] = useState<Category>('all');
+  const [selectedCategory, setSelectedCategory] = useState<Category>('fastfood');
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuLoading, setIsMenuLoading] = useState(false);
+  const [isFormulaCompleteModalOpen, setIsFormulaCompleteModalOpen] = useState(false);
+  const [stepFeedback, setStepFeedback] = useState<{ message: string; type: string } | null>(null);
+
+  // Derived 3 formula slot items (1 Fast Food, 1 Accompagnant, 1 Dessert)
+  const fastFoodItem = cartItems.find(i => i.menuItem.category === 'fastfood');
+  const accompagnantItem = cartItems.find(i => i.menuItem.category === 'accompagnants');
+  const dessertItem = cartItems.find(i => i.menuItem.category === 'desserts');
+  const isFormulaComplete = !!(fastFoodItem && accompagnantItem && dessertItem);
+
+  // Auto-clear step toast notification
+  useEffect(() => {
+    if (stepFeedback) {
+      const timer = setTimeout(() => setStepFeedback(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [stepFeedback]);
 
   // Trigger subtle skeleton loading state when category or search changes
   useEffect(() => {
@@ -321,7 +339,7 @@ export default function App() {
     return matchesCat && matchesSearch;
   });
 
-  // Handle Add To Cart
+  // Handle Add To Cart with sequential formula flow: Fast-Food -> Accompagnants -> Desserts -> Propose Direct Order
   const handleAddToCart = (item: MenuItem, selectedOptions: Record<string, string>, specialInstructions: string) => {
     // Force registration if new user hasn't provided coordinates yet
     if (!studentProfile) {
@@ -335,34 +353,78 @@ export default function App() {
       return;
     }
 
-    if (totalCartCount >= MAX_FREE_ITEMS && !cartItems.some(i => i.menuItem.id === item.id)) {
-      setIsQuotaNoticeOpen(true);
-      return;
-    }
+    const newItem: CartItem = {
+      id: `cart-${Date.now()}-${item.id}`,
+      menuItem: item,
+      quantity: 1,
+      selectedOptions,
+      specialInstructions
+    };
 
-    setCartItems(prev => {
-      const existingIdx = prev.findIndex(i => i.menuItem.id === item.id);
-      if (existingIdx > -1) {
-        const updated = [...prev];
-        updated[existingIdx] = {
-          ...updated[existingIdx],
-          selectedOptions,
-          specialInstructions
-        };
-        return updated;
-      } else {
-        return [
-          ...prev,
-          {
-            id: `cart-${Date.now()}-${item.id}`,
-            menuItem: item,
-            quantity: 1,
-            selectedOptions,
-            specialInstructions
-          }
-        ];
+    // Replace any existing item of the same category (1 Fast-Food, 1 Accompagnant, 1 Dessert only!)
+    const remainingItems = cartItems.filter(i => i.menuItem.category !== item.category);
+    const updatedCart = [...remainingItems, newItem];
+    setCartItems(updatedCart);
+
+    const hasFastFood = updatedCart.some(i => i.menuItem.category === 'fastfood');
+    const hasAccompagnant = updatedCart.some(i => i.menuItem.category === 'accompagnants');
+    const hasDessert = updatedCart.some(i => i.menuItem.category === 'desserts');
+    const formulaFinished = hasFastFood && hasAccompagnant && hasDessert;
+
+    // Sequential transitions requested by user:
+    // Fast-food -> Accompagnants -> Desserts -> Proposer de commander directement
+    if (item.category === 'fastfood') {
+      setSelectedCategory('accompagnants');
+      setStepFeedback({
+        message: `🍔 Fast-Food « ${item.name} » validé ! Étape 2 : Choisissez maintenant votre accompagnant.`,
+        type: 'fastfood'
+      });
+      setTimeout(() => {
+        const el = document.getElementById('menu-section');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else if (item.category === 'accompagnants') {
+      setSelectedCategory('desserts');
+      setStepFeedback({
+        message: `🍟 Accompagnant « ${item.name} » validé ! Étape 3 : Choisissez maintenant votre dessert.`,
+        type: 'accompagnants'
+      });
+      setTimeout(() => {
+        const el = document.getElementById('menu-section');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else if (item.category === 'desserts') {
+      if (formulaFinished) {
+        setStepFeedback({
+          message: `🎉 Formule complète validée (3/3) ! Vous pouvez commander directement.`,
+          type: 'complete'
+        });
+        // Proposer directement de commander
+        setTimeout(() => {
+          setIsFormulaCompleteModalOpen(true);
+        }, 350);
+      } else if (!hasFastFood) {
+        setSelectedCategory('fastfood');
+        setStepFeedback({
+          message: `🥤 Dessert « ${item.name} » choisi ! Choisissez maintenant votre Fast-Food (Étape 1).`,
+          type: 'desserts'
+        });
+        setTimeout(() => {
+          const el = document.getElementById('menu-section');
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else if (!hasAccompagnant) {
+        setSelectedCategory('accompagnants');
+        setStepFeedback({
+          message: `🥤 Dessert « ${item.name} » choisi ! Choisissez maintenant votre Accompagnant (Étape 2).`,
+          type: 'desserts'
+        });
+        setTimeout(() => {
+          const el = document.getElementById('menu-section');
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       }
-    });
+    }
   };
 
   const handleRemoveFromCart = (cartItemId: string) => {
@@ -421,11 +483,10 @@ export default function App() {
   };
 
   const categories: { id: Category; label: string; icon: any }[] = [
-    { id: 'all', label: 'Tout le Menu', icon: Utensils },
-    { id: 'plats', label: 'Plats Chauds', icon: Utensils },
-    { id: 'fastfood', label: 'Snacks & Fast-Food', icon: Pizza },
-    { id: 'boissons', label: 'Jus & Boissons Fraîches', icon: GlassWater },
-    { id: 'desserts', label: 'Desserts & Sucrés', icon: IceCream }
+    { id: 'fastfood', label: '1. Fast-Food', icon: Pizza },
+    { id: 'accompagnants', label: '2. Accompagnants', icon: Utensils },
+    { id: 'desserts', label: '3. Desserts', icon: IceCream },
+    { id: 'all', label: 'Tout le Menu', icon: Sparkles }
   ];
 
   return (
@@ -553,6 +614,34 @@ export default function App() {
               </div>
             </div>
 
+            {/* INTERACTIVE 3-STEP FORMULA STEPPER */}
+            <FormulaStepper
+              currentCategory={selectedCategory}
+              onSelectCategory={(cat) => setSelectedCategory(cat)}
+              fastFoodItem={fastFoodItem}
+              accompagnantItem={accompagnantItem}
+              dessertItem={dessertItem}
+              onOrderDirectly={() => setIsCheckoutOpen(true)}
+              hasActiveOrder={!!activePendingOrder}
+            />
+
+            {/* Step Feedback Toast Banner */}
+            {stepFeedback && (
+              <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl shadow-lg border border-orange-400 flex items-center justify-between gap-3 animate-fade-in">
+                <div className="flex items-center gap-2.5 text-xs sm:text-sm font-black">
+                  <Sparkles className="w-4 h-4 text-yellow-300 shrink-0" />
+                  <span>{stepFeedback.message}</span>
+                </div>
+                <button
+                  onClick={() => setStepFeedback(null)}
+                  className="p-1 rounded-lg text-white/80 hover:text-white hover:bg-white/10 shrink-0"
+                  aria-label="Fermer"
+                >
+                  <Check className="w-4 h-4 stroke-[3]" />
+                </button>
+              </div>
+            )}
+
             {/* Menu Section with Vertical Left Sidebar on Desktop */}
             <div id="menu-section" className="flex flex-col lg:flex-row items-start gap-6">
               
@@ -620,36 +709,61 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 font-black text-xs uppercase tracking-wider text-yellow-200">
                       <Sparkles className="w-4 h-4 text-yellow-300" />
-                      <span>Quota Offert ESP</span>
+                      <span>Formule ESP (3/3)</span>
                     </div>
                     <span className="font-mono font-black text-xs bg-white/20 px-2 py-0.5 rounded-lg text-white">
                       {totalCartCount} / 3
                     </span>
                   </div>
 
-                  {/* 3 Steps Visual Progress Bar */}
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {[1, 2, 3].map((step) => {
-                      const isFilled = totalCartCount >= step;
-                      return (
-                        <div
-                          key={step}
-                          className={`h-2 rounded-full transition-all duration-300 ${
-                            isFilled ? 'bg-yellow-300 shadow-xs' : 'bg-white/25'
-                          }`}
-                        />
-                      );
-                    })}
+                  {/* 3 Formula Items Status List */}
+                  <div className="space-y-1.5 text-[11px] pt-1">
+                    <div className="flex items-center justify-between bg-white/10 px-2.5 py-1.5 rounded-xl">
+                      <span className="text-orange-100 flex items-center gap-1.5 font-bold">
+                        <span>🍔</span>
+                        <span>1. Fast-Food</span>
+                      </span>
+                      <span className="font-bold truncate max-w-[120px] text-yellow-200">
+                        {fastFoodItem ? `✓ ${fastFoodItem.menuItem.name}` : 'À choisir'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-white/10 px-2.5 py-1.5 rounded-xl">
+                      <span className="text-orange-100 flex items-center gap-1.5 font-bold">
+                        <span>🍟</span>
+                        <span>2. Accompagnant</span>
+                      </span>
+                      <span className="font-bold truncate max-w-[120px] text-yellow-200">
+                        {accompagnantItem ? `✓ ${accompagnantItem.menuItem.name}` : 'À choisir'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-white/10 px-2.5 py-1.5 rounded-xl">
+                      <span className="text-orange-100 flex items-center gap-1.5 font-bold">
+                        <span>🥤</span>
+                        <span>3. Dessert</span>
+                      </span>
+                      <span className="font-bold truncate max-w-[120px] text-yellow-200">
+                        {dessertItem ? `✓ ${dessertItem.menuItem.name}` : 'À choisir'}
+                      </span>
+                    </div>
                   </div>
 
-                  <p className="text-[11px] font-medium leading-relaxed text-orange-100">
-                    {totalCartCount === 0 && 'Choisissez jusqu\'à 3 plats ou boissons offerts (0 FCFA).'}
-                    {totalCartCount === 1 && '1 plat sélectionné. Choisissez encore 2 articles offerts !'}
-                    {totalCartCount === 2 && '2 plats sélectionnés. Plus qu\'un dernier article offert !'}
-                    {totalCartCount >= 3 && '🎉 Quota complet (3/3) ! Vous pouvez valider votre commande.'}
-                  </p>
-
-                  {totalCartCount > 0 && (
+                  {isFormulaComplete ? (
+                    <button
+                      onClick={() => {
+                        if (activePendingOrder) {
+                          setIsActiveOrderNoticeOpen(true);
+                        } else {
+                          setIsCheckoutOpen(true);
+                        }
+                      }}
+                      className="w-full bg-white hover:bg-orange-50 text-orange-600 text-xs font-black py-2.5 px-3 rounded-xl uppercase tracking-wider flex items-center justify-between transition-all active:scale-95 shadow-md"
+                    >
+                      <span>Commander directement</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  ) : totalCartCount > 0 ? (
                     <button
                       onClick={() => {
                         if (activePendingOrder) {
@@ -663,7 +777,7 @@ export default function App() {
                       <span>Voir mon panier</span>
                       <span className="text-orange-400 font-bold">0 FCFA →</span>
                     </button>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Active Pending Order Widget in Sidebar (if active order exists) */}
@@ -789,6 +903,7 @@ export default function App() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-5 lg:gap-6">
                     {filteredMenuItems.map((item) => {
                       const isInCart = cartItems.some(i => i.menuItem.id === item.id);
+                      const isCategorySlotFilled = cartItems.some(i => i.menuItem.category === item.category);
                       return (
                         <MenuCard
                           key={item.id}
@@ -801,9 +916,7 @@ export default function App() {
                             }
                           }}
                           isInCart={isInCart}
-                          cartCount={totalCartCount}
-                          maxAllowed={MAX_FREE_ITEMS}
-                          onQuotaLimitReached={() => setIsQuotaNoticeOpen(true)}
+                          isCategorySlotFilled={isCategorySlotFilled}
                         />
                       );
                     })}
@@ -967,6 +1080,23 @@ export default function App() {
         onClearCart={handleClearCart}
         onProceedToCheckout={() => setIsCheckoutOpen(true)}
         maxAllowed={MAX_FREE_ITEMS}
+        onSelectCategory={(cat) => setSelectedCategory(cat)}
+      />
+
+      {/* Formula Completion Propose Direct Order Modal */}
+      <FormulaCompletionModal
+        isOpen={isFormulaCompleteModalOpen}
+        onClose={() => setIsFormulaCompleteModalOpen(false)}
+        fastFood={fastFoodItem}
+        accompagnant={accompagnantItem}
+        dessert={dessertItem}
+        onProceedToCheckout={() => {
+          setIsFormulaCompleteModalOpen(false);
+          setIsCheckoutOpen(true);
+        }}
+        onModifyChoices={() => {
+          setIsFormulaCompleteModalOpen(false);
+        }}
       />
 
       <CheckoutModal

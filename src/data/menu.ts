@@ -1,417 +1,381 @@
 import { MenuItem, CampusLocation } from '../types';
 import heroImage from '../assets/images/esp_hero_food_1786275292789.jpg';
-import thiebouImage from '../assets/images/thiebou_jen_plate_1786380059882.jpg';
+import burgerPouletImg from '../assets/images/burger_poulet_menu_1791318581191.jpg';
+import burgerViandeImg from '../assets/images/burger_viande_menu_1791318596477.jpg';
+import burgerHotDogImg from '../assets/images/hot_dog_gourmet_1791358676387.jpg';
+import fatayaImg from '../assets/images/fataya_senegal_menu_1791318612059.jpg';
+import fatayaCompletImg from '../assets/images/fataya_complet_plat_1791358663894.jpg';
+import fritesImg from '../assets/images/frites_sauce_menu_1791318626889.jpg';
+import ketchupImg from '../assets/images/sauce_ketchup_1791319621583.jpg';
+import mayonnaiseImg from '../assets/images/sauce_mayonnaise_1791319677329.jpg';
+import sauceSamouraiImg from '../assets/images/sauce_samourai_1791319699425.jpg';
+import sauceBarbecueImg from '../assets/images/sauce_barbecue_1791319735502.jpg';
+import dessertsImg from '../assets/images/desserts_fruits_boissons_1791318642017.jpg';
+import agrumesImg from '../assets/images/schweppes_agrumes_1791359847096.jpg';
+import cocaImg from '../assets/images/coca_bouteille_1791358718613.jpg';
+import spriteImg from '../assets/images/sprite_bouteille_1791358696303.jpg';
+import fantaImg from '../assets/images/fanta_bouteille_1791358687294.jpg';
+import chawarmaImage from '../assets/images/chawarma_poulet_frais_1786367300599.jpg';
+import chawarmaViandeImg from '../assets/images/chawarma_viande_1791319532323.jpg';
 import bissapImage from '../assets/images/bissap_frais_jus_1786281830766.jpg';
 import ditakhImage from '../assets/images/ditakh_frais_jus_1786282107666.jpg';
-import gingembreImage from '../assets/images/gingembre_ananas_jus_1786282379719.jpg';
 import bouyeImage from '../assets/images/bouye_creme_baobab_1786282668294.jpg';
-import cocktailImage from '../assets/images/cocktail_fruits_exotiques_1786282747086.jpg';
-import yassaImage from '../assets/images/yassa_poulet_senegal_1786369384343.jpg';
-import mafeImage from '../assets/images/mafe_simple_ref_1786366797354.jpg';
-import chickenPlatterImage from '../assets/images/dibiterie_poulet_frites_1786367000_1786367049525.jpg';
-import chawarmaImage from '../assets/images/chawarma_poulet_frais_1786367300599.jpg';
-import frenchTacosImage from '../assets/images/french_tacos_double_viande_1786367418983.jpg';
-import thiakryImage from '../assets/images/thiakry_degue_bol_1786367707954.jpg';
-import parfaitMangueImage from '../assets/images/parfait_mangue_passion_1786368164841.jpg';
 import fruitSaladImage from '../assets/images/salade_fruits_frais_1786368634287.jpg';
+import parfaitMangueImage from '../assets/images/parfait_mangue_passion_1786368164841.jpg';
+import ananasImg from '../assets/images/ananas_lamelles_1791359338000.jpg';
+import mangueImg from '../assets/images/mangue_fraiche_1791359352929.jpg';
+import orangesImg from '../assets/images/oranges_fraiches_1791359364462.jpg';
+import mandarineImg from '../assets/images/mandarine_fraiche_1791359373551.jpg';
+import pommesImg from '../assets/images/pommes_fraiches_1791359385191.jpg';
+import bananesImg from '../assets/images/bananes_fraiches_1791359394486.jpg';
 
 export const HERO_IMAGE_URL = heroImage;
 
+export const RESTAURANT_CONTACT = {
+  phone: '+221 33 844 01 01',
+  phoneRaw: '+221338440101',
+  name: 'Les Polytechniciens • Resto ESP',
+  location: 'École Supérieure Polytechnique (UCAD Dakar)'
+};
+
 export const MENU_ITEMS: MenuItem[] = [
-  // ------------------- PLATS TRADITIONNELS -------------------
+  // ----------------------------------------------------
+  // 1. FAST FOOD (1 seul au choix par étudiant)
+  // ----------------------------------------------------
   {
-    id: 'm1',
-    name: 'Thiebou jën',
-    category: 'plats',
-    description: 'Riz rouge traditionnel sénégalais cuit au bouillon de poisson avec thiof, manioc, carotte, chou et diakhassou. Le grand classique du Resto ESP !',
-    normalPrice: 2500,
-    isFreeForNewStudents: true,
-    image: thiebouImage,
-    prepTime: '10-15 min',
-    calories: '650 kcal',
-    spicyLevel: 'mild',
-    tags: ['Spécialité ESP', 'Best-Seller', 'Incontournable'],
-    options: [
-      { name: 'Niveau de piment', choices: ['Piment doux', 'Sans piment', 'Piment fort (Rokh)'] },
-      { name: 'Accompagnement', choices: ['Sauce Beugueul classique', 'Extra Légumes'] }
-    ]
-  },
-  {
-    id: 'm2',
-    name: 'Yassa Poulet ESP Special',
-    category: 'plats',
-    description: 'Poulet mariné au citron du pays et moutarde, cuit lentement avec des oignons caramélisés. Servi chaud sur du riz blanc parfumé.',
+    id: 'ff-1',
+    name: 'Burger Poulet',
+    category: 'fastfood',
+    description: 'Filet de poulet croustillant et doré, fromage fondu, salade fraîche et sauce burger douce dans un pain brioché aux graines de sésame.',
     normalPrice: 2200,
     isFreeForNewStudents: true,
-    image: yassaImage,
-    prepTime: '12 min',
-    calories: '580 kcal',
-    spicyLevel: 'mild',
-    tags: ['Recommandé BDE', 'Frais'],
-    options: [
-      { name: 'Part de poulet', choices: ['Cuisse', 'Blanc'] },
-      { name: 'Sauce', choices: ['Sauce Yassa généreuse', 'Sauce à part'] }
-    ]
-  },
-  {
-    id: 'm3',
-    name: 'Mafé Simple',
-    category: 'plats',
-    description: 'Riz blanc servi avec une sauce onctueuse à la pâte d’arachide faite maison et morceaux de bœuf tendres cuits en mijoté.',
-    normalPrice: 2000,
-    isFreeForNewStudents: true,
-    image: mafeImage,
-    prepTime: '10 min',
-    calories: '720 kcal',
-    spicyLevel: 'none',
-    tags: ['Rassasiant', 'Traditionnel'],
-    options: [
-      { name: 'Riz', choices: ['Riz blanc', 'Riz brisé'] }
-    ]
-  },
-
-  // ------------------- FAST FOOD & SNACKS -------------------
-  {
-    id: 'm5',
-    name: 'Dibi Poulet & Frites Campus',
-    category: 'fastfood',
-    description: 'Morceaux de poulet grillés au feu de bois façon dibiterie sénégalaise, servis avec oignons marinés, piment vert et portion de frites croustillantes.',
-    normalPrice: 2800,
-    isFreeForNewStudents: true,
-    image: chickenPlatterImage,
-    prepTime: '15 min',
-    calories: '800 kcal',
-    spicyLevel: 'spicy',
-    tags: ['Grillade', 'Favori Étudiants'],
-    options: [
-      { name: 'Sauce grillade', choices: ['Moutarde & Piment', 'Sauce Blanche', 'Ketchup'] }
-    ]
-  },
-  {
-    id: 'm6',
-    name: 'Chawarma Poulet & Sauce Ail ESP',
-    category: 'fastfood',
-    description: 'Pain pita bien chaud rempli d’effiloché de poulet grillé épicé, frites dorées, salade fraîche et notre sauce à l’ail secrète du Foyer ESP.',
-    normalPrice: 1800,
-    isFreeForNewStudents: true,
-    image: chawarmaImage,
-    prepTime: '8 min',
-    calories: '520 kcal',
-    spicyLevel: 'mild',
-    tags: ['Rapide', 'Sur le pouce'],
-    options: [
-      { name: 'Garniture', choices: ['Tout compris', 'Sans piment', 'Extra Fromage'] }
-    ]
-  },
-  {
-    id: 'm7',
-    name: 'French Tacos L\'Ingénieur (2 Viandes)',
-    category: 'fastfood',
-    description: 'Galette de blé grillée, garnie de poulet crispy + viande hachée, frites croustillantes à l\'intérieur et notre généreuse sauce fromagère maison chaude.',
-    normalPrice: 3000,
-    isFreeForNewStudents: true,
-    image: frenchTacosImage,
-    prepTime: '12 min',
-    calories: '920 kcal',
-    spicyLevel: 'mild',
-    tags: ['XXL', 'Sauce Fromagère', 'Ultra Gourmand'],
-    options: [
-      { name: 'Choix des viandes', choices: ['Poulet Crispy & Haché', 'Double Poulet', 'Haché & Merguez'] },
-      { name: 'Sauce', choices: ['Sauce Algérienne', 'Sauce Blanche', 'Sauce Samouraï'] }
-    ]
-  },
-  {
-    id: 'm8',
-    name: 'Burger Polytech Double Steak Cheddar',
-    category: 'fastfood',
-    description: 'Double steak haché grillé, fromage cheddar fondu, oignons caramélisés, cornichons, salade et frites de patate douce ou pomme de terre.',
-    normalPrice: 2500,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=800',
-    prepTime: '12 min',
-    calories: '790 kcal',
-    spicyLevel: 'none',
-    tags: ['Gourmand', 'Double Steak']
-  },
-  {
-    id: 'm9',
-    name: 'Panini Poulet Fondu Cheddar & Mozza',
-    category: 'fastfood',
-    description: 'Pain panini ciabatta croustillant pressé à chaud, émincé de poulet épicé, fromage cheddar fondu et mozzarella filante.',
-    normalPrice: 2000,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&q=80&w=800',
-    prepTime: '8 min',
-    calories: '610 kcal',
-    spicyLevel: 'none',
-    tags: ['Fromage Fondu', 'Chaud & Croustillant']
-  },
-  {
-    id: 'm11',
-    name: 'Wrap Poulet Croustillant & Sauce Blanche',
-    category: 'fastfood',
-    description: 'Tortilla de blé roulée garnie de tenders de poulet pané croustillant, tomates fraîches, salade croquante et sauce blanche aux herbes.',
-    normalPrice: 1900,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1603064752734-4c48eff53d05?auto=format&fit=crop&q=80&w=800',
-    prepTime: '7 min',
+    image: burgerPouletImg,
+    prepTime: '8-10 min',
     calories: '540 kcal',
     spicyLevel: 'none',
-    tags: ['Fresh', 'Poulet Crispy']
-  },
-  {
-    id: 'm12',
-    name: 'Pizza Campus Reine (Poulet & Fromage)',
-    category: 'fastfood',
-    description: 'Pizza artisanale cuite au four, sauce tomate aromatisée, généreuse mozzarella, dés de poulet rôti, champignons frais et origan.',
-    normalPrice: 3200,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=800',
-    prepTime: '15 min',
-    calories: '850 kcal',
-    spicyLevel: 'none',
-    tags: ['Pizza Artisanale', 'À Partager']
-  },
-  {
-    id: 'm13',
-    name: 'Bucket 10 Nuggets Croustillants & Frites',
-    category: 'fastfood',
-    description: '10 nuggets de filet de poulet pur croustillants accompagnés d\'une grande frite et de 2 sauces au choix (BBQ, Mayo, Ketchup).',
-    normalPrice: 2600,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=800',
-    prepTime: '10 min',
-    calories: '710 kcal',
-    spicyLevel: 'none',
-    tags: ['Bucket', '10 Pièces']
-  },
-  {
-    id: 'm14',
-    name: 'Pastels au Poisson (Portion de 6)',
-    category: 'fastfood',
-    description: 'Petits beignets dorés croustillants farcis au poisson assaisonné au persil et ail, servis avec sauce tomate épicée.',
-    normalPrice: 1200,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=800',
-    prepTime: '5 min',
-    calories: '380 kcal',
-    spicyLevel: 'spicy',
-    tags: ['Snack', 'Populaire']
-  },
-
-  // ------------------- JUS & BOISSONS FRAÎCHES (STRICTEMENT SANS CAFÉ) -------------------
-  {
-    id: 'm15',
-    name: 'Jus de Bissap Rouge Frais (50cl)',
-    category: 'boissons',
-    description: 'Infusion artisanale de fleurs d’hibiscus du Sénégal parfumée à la menthe fraîche, vanille et une touche de fleur d’oranger.',
-    normalPrice: 600,
-    isFreeForNewStudents: true,
-    image: bissapImage,
-    prepTime: 'Immédiat',
-    calories: '120 kcal',
-    spicyLevel: 'none',
-    tags: ['Nectar Sénégalais', '100% Naturel', 'Très Frais'],
+    tags: ['Best-Seller', 'Poulet Croustillant', 'Fast Food'],
     options: [
-      { name: 'Glaçons', choices: ['Bien Glacé', 'Température Ambiante'] }
+      { name: 'Cuisson & Saveur', choices: ['Classique fondant', 'Extra grillé'] }
     ]
   },
   {
-    id: 'm16',
-    name: 'Jus de Bouye Pur Baobab (50cl)',
-    category: 'boissons',
-    description: 'Jus traditionnel crémeux au pain de singe (fruit du baobab), concentré de lait et vanille. Énergétique et idéal pour les révisions !',
+    id: 'ff-2',
+    name: 'Burger Hot-Dog + Fromage',
+    category: 'fastfood',
+    description: 'Pain toasté moelleux garni de saucisse savoureuse, fromage fondu généreux, moutarde douce et oignons dorés caramélisés.',
+    normalPrice: 2000,
+    isFreeForNewStudents: true,
+    image: burgerHotDogImg,
+    prepTime: '6-8 min',
+    calories: '490 kcal',
+    spicyLevel: 'none',
+    tags: ['Fromage Fondu', 'Gourmand', 'Fast Food']
+  },
+  {
+    id: 'ff-3',
+    name: 'Burger Viande',
+    category: 'fastfood',
+    description: 'Steak pur bœuf haché grillé à la flamme, cheddar fondant, tomate, oignons rouges et sauce maison onctueuse.',
+    normalPrice: 2400,
+    isFreeForNewStudents: true,
+    image: burgerViandeImg,
+    prepTime: '8-10 min',
+    calories: '580 kcal',
+    spicyLevel: 'none',
+    tags: ['Pur Bœuf', 'Cheddar', 'Incontournable']
+  },
+  {
+    id: 'ff-4',
+    name: 'Chawarma Poulet',
+    category: 'fastfood',
+    description: 'Émincé de poulet tendre mariné aux épices douces, crème à l\'ail toum libanaise et frites croustillantes roulés dans du pain libanais chaud.',
+    normalPrice: 2300,
+    isFreeForNewStudents: true,
+    image: chawarmaImage,
+    prepTime: '7-9 min',
+    calories: '520 kcal',
+    spicyLevel: 'none',
+    tags: ['Poulet Mariné', 'Pain Libanais', 'Culte ESP']
+  },
+  {
+    id: 'ff-5',
+    name: 'Chawarma Viande',
+    category: 'fastfood',
+    description: 'Fines lamelles de bœuf assaisonnées et saisies à la plancha, sauce tahina au sésame, persil, oignons et tomates fraîches.',
+    normalPrice: 2500,
+    isFreeForNewStudents: true,
+    image: chawarmaViandeImg,
+    prepTime: '7-9 min',
+    calories: '560 kcal',
+    spicyLevel: 'none',
+    tags: ['Bœuf Plancha', 'Sauce Sésame', 'Savoureux']
+  },
+  {
+    id: 'ff-6',
+    name: 'Fataya Simple',
+    category: 'fastfood',
+    description: 'Chausson doré sénégalais croustillant et feuilleté, généreusement farci à la viande hachée bien épicée et servi avec sa sauce tomate kaani.',
+    normalPrice: 1800,
+    isFreeForNewStudents: true,
+    image: fatayaImg,
+    prepTime: '5-7 min',
+    calories: '430 kcal',
+    spicyLevel: 'mild',
+    tags: ['Spécialité Sénégalaise', 'Croustillant', 'Sauce Kaani']
+  },
+  {
+    id: 'ff-7',
+    name: 'Fataya Complet',
+    category: 'fastfood',
+    description: 'Grand fataya sénégalais croustillant complet garni de viande hachée mijotée, œuf et frites fondantes, un vrai régal réconfortant.',
+    normalPrice: 2200,
+    isFreeForNewStudents: true,
+    image: fatayaCompletImg,
+    prepTime: '6-8 min',
+    calories: '590 kcal',
+    spicyLevel: 'mild',
+    tags: ['Complet avec Œuf', 'Ultra Rassasiant', 'Favori Campus']
+  },
+
+  // ----------------------------------------------------
+  // 2. ACCOMPAGNANTS (1 seul au choix par étudiant)
+  // ----------------------------------------------------
+  {
+    id: 'acc-1',
+    name: 'Frites',
+    category: 'accompagnants',
+    description: 'Portion généreuse de frites de pommes de terre fraîches dorées à souhait, croustillantes à l\'extérieur et moelleuses à l\'intérieur.',
+    normalPrice: 1000,
+    isFreeForNewStudents: true,
+    image: fritesImg,
+    prepTime: '5 min',
+    calories: '310 kcal',
+    spicyLevel: 'none',
+    tags: ['Frites Dorées', 'Croustillantes', 'Accompagnant']
+  },
+  {
+    id: 'acc-2',
+    name: 'Ketchup',
+    category: 'accompagnants',
+    description: 'Sauce ketchup onctueuse, douce et fruitée à base de tomates mûres de première qualité.',
+    normalPrice: 300,
+    isFreeForNewStudents: true,
+    image: ketchupImg,
+    prepTime: 'Instantané',
+    calories: '40 kcal',
+    spicyLevel: 'none',
+    tags: ['Sauce Douce', 'Tomate']
+  },
+  {
+    id: 'acc-3',
+    name: 'Mayonnaise',
+    category: 'accompagnants',
+    description: 'Sauce mayonnaise crémeuse et onctueuse préparée dans la tradition pour accompagner vos snacks.',
+    normalPrice: 300,
+    isFreeForNewStudents: true,
+    image: mayonnaiseImg,
+    prepTime: 'Instantané',
+    calories: '90 kcal',
+    spicyLevel: 'none',
+    tags: ['Sauce Onctueuse', 'Crémeuse']
+  },
+  {
+    id: 'acc-4',
+    name: 'Sauce Samourai',
+    category: 'accompagnants',
+    description: 'Sauce samouraï relevée et pimentée à la perfection, pour les étudiants qui aiment le goût épicé.',
+    normalPrice: 400,
+    isFreeForNewStudents: true,
+    image: sauceSamouraiImg,
+    prepTime: 'Instantané',
+    calories: '85 kcal',
+    spicyLevel: 'spicy',
+    tags: ['Pimenté', 'Sauce Épicée', 'Samouraï']
+  },
+  {
+    id: 'acc-5',
+    name: 'Sauce Barbecue',
+    category: 'accompagnants',
+    description: 'Sauce barbecue fumée aux arômes caramélisés intenses pour napper vos frites et burgers.',
+    normalPrice: 400,
+    isFreeForNewStudents: true,
+    image: sauceBarbecueImg,
+    prepTime: 'Instantané',
+    calories: '55 kcal',
+    spicyLevel: 'none',
+    tags: ['Fumée', 'Caramélisée', 'BBQ']
+  },
+
+  // ----------------------------------------------------
+  // 3. DESSERTS (Boissons fraîches & Fruits) (1 seul au choix par étudiant)
+  // ----------------------------------------------------
+  {
+    id: 'des-1',
+    name: 'Coca Cola',
+    category: 'desserts',
+    description: 'Bouteille en verre fraîche de Coca-Cola classique bien glacée avec fines bulles pétillantes.',
+    normalPrice: 600,
+    isFreeForNewStudents: true,
+    image: cocaImg,
+    prepTime: 'Immédiat',
+    calories: '140 kcal',
+    tags: ['Bouteille Verre', 'Glacé', 'Sodas']
+  },
+  {
+    id: 'des-2',
+    name: 'Sprite',
+    category: 'desserts',
+    description: 'Bouteille fraîche de Sprite citron-lime ultra rafraîchissante et désaltérante.',
+    normalPrice: 600,
+    isFreeForNewStudents: true,
+    image: spriteImg,
+    prepTime: 'Immédiat',
+    calories: '130 kcal',
+    tags: ['Bouteille', 'Citron-Lime', 'Sodas']
+  },
+  {
+    id: 'des-3',
+    name: 'Fanta',
+    category: 'desserts',
+    description: 'Bouteille fraîche de Fanta orange pétillant aux saveurs fruitées et vitaminées.',
+    normalPrice: 600,
+    isFreeForNewStudents: true,
+    image: fantaImg,
+    prepTime: 'Immédiat',
+    calories: '135 kcal',
+    tags: ['Bouteille', 'Saveur Orange', 'Sodas']
+  },
+  {
+    id: 'des-4',
+    name: 'Agrumes',
+    category: 'desserts',
+    description: 'Boisson gazeuse fraîche aux extraits d\'agrumes ensoleillés (orange, pamplemousse, mandarine).',
+    normalPrice: 600,
+    isFreeForNewStudents: true,
+    image: agrumesImg,
+    prepTime: 'Immédiat',
+    calories: '120 kcal',
+    tags: ['Agrumes', 'Désaltérant', 'Frais']
+  },
+  {
+    id: 'des-5',
+    name: 'Bouye',
+    category: 'desserts',
+    description: 'Pur jus naturel de pain de singe (fruit du baobab sénégalais) onctueux, riche en vitamine C et parfumé.',
     normalPrice: 800,
     isFreeForNewStudents: true,
     image: bouyeImage,
-    prepTime: 'Immédiat',
-    calories: '210 kcal',
-    spicyLevel: 'none',
-    tags: ['Crémeux', 'Boost Énergie', 'Favori']
+    prepTime: 'Frais',
+    calories: '180 kcal',
+    tags: ['Jus Naturel', 'Baobab Pur', 'Local Sénégal']
   },
   {
-    id: 'm17',
-    name: 'Jus de Ditakh Frais (50cl)',
-    category: 'boissons',
-    description: 'Boisson rafraîchissante couleur émeraude à base du fruit exotique Ditakh, riche en vitamine C.',
+    id: 'des-6',
+    name: 'Bissap',
+    category: 'desserts',
+    description: 'Infusion froide traditionnelle de fleurs d\'hibiscus rouge du Sénégal avec touche de menthe fraîche.',
     normalPrice: 700,
+    isFreeForNewStudents: true,
+    image: bissapImage,
+    prepTime: 'Frais',
+    calories: '110 kcal',
+    tags: ['Hibiscus Rouge', 'Menthe', 'Boisson Locale']
+  },
+  {
+    id: 'des-7',
+    name: 'Ditakh',
+    category: 'desserts',
+    description: 'Jus sauvage de ditakh frais du pays, couleur verte naturelle, acidulé, savoureux et plein d\'énergie.',
+    normalPrice: 800,
     isFreeForNewStudents: true,
     image: ditakhImage,
-    prepTime: 'Immédiat',
-    calories: '110 kcal',
-    spicyLevel: 'none',
-    tags: ['Vitamine C', 'Artisanal']
+    prepTime: 'Frais',
+    calories: '125 kcal',
+    tags: ['Ditakh Sauvage', 'Frais & Énergisant', 'Local']
   },
   {
-    id: 'm18',
-    name: 'Jus de Gingembre Épicé & Ananas (50cl)',
-    category: 'boissons',
-    description: 'Pressage de gingembre frais relevé de jus d\'ananas sucré et de menthe poivrée. Un booster tonique rafraîchissant.',
-    normalPrice: 700,
+    id: 'des-8',
+    name: 'Banane',
+    category: 'desserts',
+    description: 'Banane fraîche et mûre du Sénégal, douce et nourrissante pour faire le plein d\'énergie après les cours.',
+    normalPrice: 500,
     isFreeForNewStudents: true,
-    image: gingembreImage,
+    image: bananesImg,
     prepTime: 'Immédiat',
-    calories: '130 kcal',
-    spicyLevel: 'mild',
-    tags: ['Gingembre Frais', 'Tonique', 'Glace']
+    calories: '105 kcal',
+    tags: ['Fruit Frais', 'Naturel', 'Énergie']
   },
   {
-    id: 'm19',
-    name: 'Cocktail Fruits Exotiques Frais (50cl)',
-    category: 'boissons',
-    description: 'Mélange glacé 100% fruits frais : Mangue sénégalaise, Fruit de la passion, Ananas et jus d\'orange fraîchement pressé.',
-    normalPrice: 1000,
-    isFreeForNewStudents: true,
-    image: cocktailImage,
-    prepTime: '3 min',
-    calories: '160 kcal',
-    spicyLevel: 'none',
-    tags: ['Cocktail Vitaminé', '100% Fruits']
-  },
-  {
-    id: 'm20',
-    name: 'Citronnade Menthe Fraîche Glacée (50cl)',
-    category: 'boissons',
-    description: 'Jus de citrons verts pressés à froid avec feuilles de menthe pilées et glace pilée. Hyper désaltérant sous le soleil de Dakar.',
+    id: 'des-9',
+    name: 'Pomme',
+    category: 'desserts',
+    description: 'Pomme entière rouge ou bicolore, bien croquante, juteuse et rafraîchissante.',
     normalPrice: 600,
     isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=800',
-    prepTime: '2 min',
-    calories: '90 kcal',
-    spicyLevel: 'none',
-    tags: ['Citronnade', 'Ultra Désaltérant']
-  },
-  {
-    id: 'm21',
-    name: 'Smoothie Mangue Papaye Onctueux (50cl)',
-    category: 'boissons',
-    description: 'Smoothie velouté aux mangues de Sangalkam et papaye fraîche mixées au yaourt doux et touche de miel.',
-    normalPrice: 1200,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&q=80&w=800',
-    prepTime: '3 min',
-    calories: '220 kcal',
-    spicyLevel: 'none',
-    tags: ['Smoothie Velouté', 'Mangue Douce']
-  },
-  {
-    id: 'm22',
-    name: 'Jus d\'Orange Pressé 100% Pur Jus (50cl)',
-    category: 'boissons',
-    description: 'Oranges douces pressées à la commande, sans aucun sucre ajouté. Plein de vitamine C pur.',
-    normalPrice: 900,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&q=80&w=800',
-    prepTime: '2 min',
-    calories: '140 kcal',
-    spicyLevel: 'none',
-    tags: ['Pur Jus', 'Vitamine C']
-  },
-
-  // ------------------- DESSERTS & SUCRÉS -------------------
-  {
-    id: 'm23',
-    name: 'Thiakry / Dêguë Crémeux (Bol)',
-    category: 'desserts',
-    description: 'Couscous de mil cuit à la vapeur mélangé avec du yaourt crémeux, du lait concentré, du sucre vanillé et de la noix de coco râpée.',
-    normalPrice: 1000,
-    isFreeForNewStudents: true,
-    image: thiakryImage,
+    image: pommesImg,
     prepTime: 'Immédiat',
-    calories: '340 kcal',
-    spicyLevel: 'none',
-    tags: ['Dessert Onctueux', 'Tradition']
+    calories: '85 kcal',
+    tags: ['Fruit Croquant', 'Vitamines', 'Frais']
   },
   {
-    id: 'm24',
-    name: 'Crêpe Gourmande Nutella Banane & Noisettes',
+    id: 'des-10',
+    name: 'Mandarine',
     category: 'desserts',
-    description: 'Grande crêpe faite maison garnie de Nutella fondant, rondelles de bananes fraîches et éclats de noisettes torréfiées.',
-    normalPrice: 1500,
+    description: 'Mandarine de saison juteuse, facile à éplucher avec un parfum d\'agrume tonique.',
+    normalPrice: 500,
     isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&q=80&w=800',
-    prepTime: '6 min',
-    calories: '480 kcal',
-    spicyLevel: 'none',
-    tags: ['Crêpe Chaud', 'Nutella']
-  },
-  {
-    id: 'm25',
-    name: 'Gaufre Croustillante Chocolat & Chantilly',
-    category: 'desserts',
-    description: 'Gaufre liégeoise dorée et croustillante, nappée de sauce chocolat chaud et d\'un dôme de crème chantilly vanillée.',
-    normalPrice: 1600,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&q=80&w=800',
-    prepTime: '7 min',
-    calories: '520 kcal',
-    spicyLevel: 'none',
-    tags: ['Gaufre Liégeoise', 'Chantilly']
-  },
-  {
-    id: 'm26',
-    name: 'Milkshake Onctueux Vanille OREO',
-    category: 'desserts',
-    description: 'Crème glacée vanille artisanale mixée au lait frais et biscuits OREO concassés, surmontée de chantilly et d\'un biscuit OREO entier.',
-    normalPrice: 1800,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&q=80&w=800',
-    prepTime: '4 min',
-    calories: '560 kcal',
-    spicyLevel: 'none',
-    tags: ['Milkshake Glacé', 'Oreo Crush']
-  },
-  {
-    id: 'm27',
-    name: 'Parfait Glacé Mangue-Passion & Coulis',
-    category: 'desserts',
-    description: 'Verrine glacée superposant de la glace vanille, des dés de mangue fraîche croquante et un coulis pur fruit de la passion.',
-    normalPrice: 1400,
-    isFreeForNewStudents: true,
-    image: parfaitMangueImage,
-    prepTime: '2 min',
-    calories: '310 kcal',
-    spicyLevel: 'none',
-    tags: ['Frais & Glacé', 'Mangue-Passion']
-  },
-  {
-    id: 'm28',
-    name: 'Fondant au Chocolat Cœur Coulant',
-    category: 'desserts',
-    description: 'Gâteau moelleux au chocolat noir intense avec un cœur chaud et coulant, servi tiède.',
-    normalPrice: 1300,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&q=80&w=800',
-    prepTime: '5 min',
-    calories: '420 kcal',
-    spicyLevel: 'none',
-    tags: ['Chocolat Noir', 'Cœur Coulant']
-  },
-  {
-    id: 'm29',
-    name: 'Tiramisu Speculoos & Caramel Beurre Salé',
-    category: 'desserts',
-    description: 'Crémeux mascarpone léger, biscuits Speculoos croustillants imbibés et coulis de caramel au beurre salé.',
-    normalPrice: 1700,
-    isFreeForNewStudents: true,
-    image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&q=80&w=800',
+    image: mandarineImg,
     prepTime: 'Immédiat',
-    calories: '450 kcal',
-    spicyLevel: 'none',
-    tags: ['Speculoos', 'Mascarpone']
+    calories: '50 kcal',
+    tags: ['Mandarine', 'Agrume Frais', 'Sucré']
   },
   {
-    id: 'm30',
-    name: 'Salade de Fruits Fraîcheur Exotique',
+    id: 'des-11',
+    name: 'Orange',
     category: 'desserts',
-    description: 'Mélange rafraîchissant de dés d\'ananas, raisins, cerises, melon et poire dans leur jus naturel, servi bien frais.',
+    description: 'Belle orange fraîche de table, gorgée de jus naturel et riche en vitamine C.',
+    normalPrice: 500,
+    isFreeForNewStudents: true,
+    image: orangesImg,
+    prepTime: 'Immédiat',
+    calories: '65 kcal',
+    tags: ['Orange', 'Vitamine C', 'Fruit']
+  },
+  {
+    id: 'des-12',
+    name: 'Salade de fruits',
+    category: 'desserts',
+    description: 'Coupe gourmande de fruits frais de saison coupés en dés (mangue, ananas, papaye, orange) au jus de passion.',
     normalPrice: 1200,
     isFreeForNewStudents: true,
     image: fruitSaladImage,
-    prepTime: 'Immédiat',
-    calories: '180 kcal',
-    spicyLevel: 'none',
-    tags: ['Vitamines & Frais', '100% Naturel']
+    prepTime: 'Frais',
+    calories: '130 kcal',
+    tags: ['Cocktail de Fruits', 'Frais du Jour', 'Gourmand']
+  },
+  {
+    id: 'des-13',
+    name: 'Mangue',
+    category: 'desserts',
+    description: 'Portion de mangue sénégalaise mûre et parfumée, chair dorée sucrée et fondante en bouche.',
+    normalPrice: 800,
+    isFreeForNewStudents: true,
+    image: mangueImg,
+    prepTime: 'Frais',
+    calories: '95 kcal',
+    tags: ['Mangue du Pays', 'Fondante', 'Sucrée']
+  },
+  {
+    id: 'des-14',
+    name: 'Lamelles d\'ananas',
+    category: 'desserts',
+    description: 'Tranches d\'ananas frais pelées et découpées en lamelles, juteuses, acidulées et dorées.',
+    normalPrice: 800,
+    isFreeForNewStudents: true,
+    image: ananasImg,
+    prepTime: 'Frais',
+    calories: '80 kcal',
+    tags: ['Ananas Frais', 'Lamelles', 'Exotique']
   }
 ];
 
@@ -420,13 +384,13 @@ export const CAMPUS_LOCATIONS: CampusLocation[] = [
     id: 'pav_a',
     name: 'Pavillon A (Résidence Étudiante)',
     type: 'pavillon',
-    description: 'Zone d’habitation universitaire principale (A1 à A8)'
+    description: 'Chambres des nouveaux étudiants - Couloir Principal'
   },
   {
     id: 'pav_b',
-    name: 'Pavillon B (Résidence Étudiante)',
+    name: 'Pavillon B (Résidence Universitaire)',
     type: 'pavillon',
-    description: 'Pavillon des étudiants en licence et master'
+    description: 'Chambres universitaires bloc B'
   },
   {
     id: 'pav_c',

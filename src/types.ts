@@ -1,4 +1,5 @@
-export type Category = 'all' | 'plats' | 'fastfood' | 'boissons' | 'desserts';
+export type Category = 'all' | 'fastfood' | 'accompagnants' | 'desserts';
+export type MenuStep = 'fastfood' | 'accompagnants' | 'desserts';
 
 export interface CustomOption {
   name: string;
@@ -18,6 +19,7 @@ export interface MenuItem {
   spicyLevel?: 'none' | 'mild' | 'spicy';
   tags: string[];
   options?: CustomOption[];
+  imagePosition?: string;
 }
 
 export interface CartItem {

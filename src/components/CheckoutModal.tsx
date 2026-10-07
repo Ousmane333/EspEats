@@ -149,7 +149,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     src={item.menuItem.image}
                     alt={item.menuItem.name}
                     referrerPolicy="no-referrer"
-                    className="w-10 h-10 rounded-lg object-cover bg-slate-100 shrink-0"
+                    style={{ objectPosition: item.menuItem.imagePosition || 'center center' }}
+                    className="w-10 h-10 rounded-lg object-cover object-center bg-slate-100 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="font-black text-xs text-slate-800 truncate">{item.menuItem.name}</div>
