@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, Utensils, Receipt, GraduationCap, ChefHat, Sparkles, CheckCircle, Lock, User, Truck, ChevronDown, X, ArrowRight, HelpCircle } from 'lucide-react';
+import { ShoppingBag, Utensils, Receipt, GraduationCap, ChefHat, Sparkles, CheckCircle, Lock, User, Truck, ChevronDown, X, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react';
 import { StudentInfo } from '../types';
 
 interface HeaderProps {
@@ -11,6 +11,7 @@ interface HeaderProps {
   hasActiveOrder: boolean;
   studentProfile?: StudentInfo | null;
   onOpenProfile?: () => void;
+  onResetAsNewUser?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,7 +22,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCart,
   hasActiveOrder,
   studentProfile,
-  onOpenProfile
+  onOpenProfile,
+  onResetAsNewUser
 }) => {
   const [isLogoMenuOpen, setIsLogoMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -225,6 +227,37 @@ export const Header: React.FC<HeaderProps> = ({
                         Ouvrir
                       </span>
                     </button>
+
+                    {/* 4. REINITIALISER NOUVEL UTILISATEUR */}
+                    {onResetAsNewUser && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsLogoMenuOpen(false);
+                          if (window.confirm('Voulez-vous réinitialiser votre session et repartir à zéro comme nouvel étudiant ?')) {
+                            onResetAsNewUser();
+                          }
+                        }}
+                        className="w-full flex items-center justify-between p-3 rounded-xl sm:rounded-2xl hover:bg-orange-50 text-slate-700 transition-all text-left border-t border-slate-100 mt-1"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 font-bold">
+                            <RotateCcw className="w-4 h-4 text-orange-600" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-black uppercase tracking-tight text-slate-800">
+                              Mode Nouvel Utilisateur
+                            </div>
+                            <div className="text-[10px] text-slate-500">
+                              Repartir de zéro (Pass 2026, Panier, Profil)
+                            </div>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold text-orange-600 uppercase bg-orange-100 px-2 py-0.5 rounded-lg">
+                          Reset
+                        </span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </>

@@ -275,11 +275,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </h3>
 
             <div>
-              <label className="text-xs text-slate-700 block mb-1 font-extrabold">Nom / Numéro de la chambre (exemple : 22G) *</label>
+              <label className="text-xs text-slate-700 block mb-1 font-extrabold">Numéro de chambre *</label>
               <input
                 type="text"
                 required
-                placeholder="Ex: 22G"
+                placeholder="Ex : 22G"
                 value={roomNumberOrDetails}
                 onChange={(e) => setRoomNumberOrDetails(e.target.value)}
                 className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-orange-500"

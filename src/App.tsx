@@ -184,7 +184,15 @@ export default function App() {
     }, 250);
     return () => clearTimeout(timer);
   }, [selectedCategory, searchQuery]);
-  
+
+  // One-time auto-reset to fresh new user requested by user
+  const FRESH_USER_RESET_KEY = 'esp_fresh_user_reset_v9';
+  if (typeof window !== 'undefined' && !localStorage.getItem(FRESH_USER_RESET_KEY)) {
+    localStorage.removeItem('esp_student_profile');
+    localStorage.removeItem('esp_student_orders');
+    localStorage.setItem(FRESH_USER_RESET_KEY, 'true');
+  }
+
   // Student Profile State (Onboarding mandatory before app access)
   const [studentProfile, setStudentProfile] = useState<StudentInfo | null>(() => {
     const saved = localStorage.getItem('esp_student_profile');
@@ -221,6 +229,24 @@ export default function App() {
   });
 
   const [receiptsSubTab, setReceiptsSubTab] = useState<'current' | 'history'>('current');
+
+  // Reset all session & profile state to act as a brand new student user
+  const handleResetAsNewUser = () => {
+    localStorage.removeItem('esp_student_profile');
+    localStorage.removeItem('esp_student_orders');
+    setStudentProfile(null);
+    setOrders([]);
+    setActiveOrder(null);
+    setCartItems([]);
+    setSelectedCategory('fastfood');
+    setSearchQuery('');
+    setActiveTab('menu');
+    setIsRegistrationOpen(true);
+    setStepFeedback({
+      message: '✨ Session réinitialisée ! Bienvenue nouvel étudiant ESP.',
+      type: 'info'
+    });
+  };
 
   // Derive active pending order (non-delivered)
   const activePendingOrder = orders.find(o => o.status !== 'delivered') || null;
@@ -509,6 +535,7 @@ export default function App() {
         hasActiveOrder={!!activePendingOrder}
         studentProfile={studentProfile}
         onOpenProfile={() => setIsRegistrationOpen(true)}
+        onResetAsNewUser={handleResetAsNewUser}
       />
 
       {/* Main Container */}
@@ -1047,6 +1074,7 @@ export default function App() {
         currentProfile={studentProfile}
         isEditing={!!studentProfile}
         onCloseEdit={() => setIsRegistrationOpen(false)}
+        onResetAsNewUser={handleResetAsNewUser}
       />
 
       <ActiveOrderNoticeModal
