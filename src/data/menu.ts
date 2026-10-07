@@ -115,7 +115,7 @@ export const MENU_ITEMS: MenuItem[] = [
     name: 'Fataya Simple',
     category: 'fastfood',
     description: 'Chausson doré sénégalais croustillant et feuilleté, généreusement farci à la viande hachée bien épicée et servi avec sa sauce tomate kaani.',
-    normalPrice: 1800,
+    normalPrice: 1000,
     isFreeForNewStudents: true,
     image: fatayaImg,
     prepTime: '5-7 min',
