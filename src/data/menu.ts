@@ -128,7 +128,7 @@ export const MENU_ITEMS: MenuItem[] = [
     name: 'Fataya Complet',
     category: 'fastfood',
     description: 'Grand fataya sénégalais croustillant complet garni de viande hachée mijotée, œuf et frites fondantes, un vrai régal réconfortant.',
-    normalPrice: 2200,
+    normalPrice: 1200,
     isFreeForNewStudents: true,
     image: fatayaCompletImg,
     prepTime: '6-8 min',

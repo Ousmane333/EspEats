@@ -8,7 +8,6 @@ import { MenuItemModal } from './components/MenuItemModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { ReceiptView } from './components/ReceiptView';
-import { FlutterBottomNavBar } from './components/FlutterBottomNavBar';
 import { AdminPanel } from './components/AdminPanel';
 import { QuotaNoticeModal } from './components/QuotaNoticeModal';
 import { StudentRegistrationModal } from './components/StudentRegistrationModal';
@@ -513,7 +512,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8 py-3 sm:py-6 pb-28 md:pb-14">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8 py-3 sm:py-6 pb-10 sm:pb-14">
         
         {/* VIEW 1: MENU & DISHES */}
         {activeTab === 'menu' && (
@@ -1122,21 +1121,6 @@ export default function App() {
       <FlutterExportModal
         isOpen={isFlutterModalOpen}
         onClose={() => setIsFlutterModalOpen(false)}
-      />
-
-      {/* Native Mobile Bottom Navigation Bar (Optimized for all smartphones) */}
-      <FlutterBottomNavBar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        cartItemCount={totalCartCount}
-        onOpenCart={() => {
-          if (activePendingOrder) {
-            setIsActiveOrderNoticeOpen(true);
-          } else {
-            setIsCartOpen(true);
-          }
-        }}
-        hasActiveOrder={!!activePendingOrder}
       />
 
       {/* Footer */}
