@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, Utensils, Receipt, GraduationCap, ChefHat, Sparkles, CheckCircle, Lock, User, Truck, ChevronDown, X, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react';
+import { ShoppingBag, Utensils, Receipt, GraduationCap, ChefHat, Sparkles, CheckCircle, Lock, User, Truck, ChevronDown, X, ArrowRight, HelpCircle, RotateCcw, ShieldCheck } from 'lucide-react';
 import { StudentInfo } from '../types';
 
 interface HeaderProps {
@@ -12,6 +12,9 @@ interface HeaderProps {
   studentProfile?: StudentInfo | null;
   onOpenProfile?: () => void;
   onResetAsNewUser?: () => void;
+  isAdminAuthenticated?: boolean;
+  onOpenAdminLogin?: () => void;
+  onAdminLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,7 +26,10 @@ export const Header: React.FC<HeaderProps> = ({
   hasActiveOrder,
   studentProfile,
   onOpenProfile,
-  onResetAsNewUser
+  onResetAsNewUser,
+  isAdminAuthenticated = false,
+  onOpenAdminLogin,
+  onAdminLogout
 }) => {
   const [isLogoMenuOpen, setIsLogoMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

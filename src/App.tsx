@@ -9,6 +9,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { ReceiptView } from './components/ReceiptView';
 import { AdminPanel } from './components/AdminPanel';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { QuotaNoticeModal } from './components/QuotaNoticeModal';
 import { StudentRegistrationModal } from './components/StudentRegistrationModal';
 import { ActiveOrderNoticeModal } from './components/ActiveOrderNoticeModal';
@@ -18,140 +19,83 @@ import { FlutterExportModal } from './components/FlutterExportModal';
 import { MenuGridSkeleton } from './components/MenuCardSkeleton';
 import { FormulaStepper } from './components/FormulaStepper';
 import { FormulaCompletionModal } from './components/FormulaCompletionModal';
-import { Search, Utensils, GlassWater, Pizza, IceCream, Sparkles, CheckCircle2, Lock, RotateCcw, AlertTriangle, History, Receipt, Smartphone, Truck, ArrowRight, Check } from 'lucide-react';
+import { Search, Utensils, GlassWater, Pizza, IceCream, Sparkles, CheckCircle2, Lock, RotateCcw, AlertTriangle, History, Receipt, Smartphone, Truck, ArrowRight, Check, ShieldCheck } from 'lucide-react';
 
 const MAX_FREE_ITEMS = 3;
 
-// Initial sample order for demo purposes
-const SAMPLE_ORDER: Order = {
-  id: 'order-demo-1',
-  orderNumber: '#ESP-2026-8912',
-  student: {
-    fullName: 'Mamadou Ndiaye',
-    email: 'm.ndiaye@esp.sn',
-    studentId: 'ESP-2026-9812',
-    department: 'Génie Informatique (DGI)',
-    level: 'DUT 1ère Année (Nouvel Étudiant)',
-    phone: '+221 77 812 34 56',
-    deliveryLocation: 'Pavillon A (Résidence Étudiante)',
-    roomNumberOrDetails: 'Chambre 104, 1er Étage'
-  },
-  items: [
-    {
-      id: 'c1',
-      menuItem: MENU_ITEMS[0], // Thiebou Jen
-      quantity: 1,
-      selectedOptions: { 'Niveau de piment': 'Piment doux' },
-      specialInstructions: 'Servir chaud S.V.P'
+// Helper API functions to synchronize orders across users and devices in real time
+function sanitizeOrder(o: any): Order {
+  return {
+    id: o?.id || `ord-${Date.now()}`,
+    orderNumber: o?.orderNumber || '#ESP-2026',
+    student: {
+      fullName: o?.student?.fullName || 'Client Étudiant',
+      email: o?.student?.email || '',
+      studentId: o?.student?.studentId || 'ESP-2026',
+      department: o?.student?.department || 'ESP',
+      level: o?.student?.level || '',
+      phone: o?.student?.phone || '',
+      deliveryLocation: o?.student?.deliveryLocation || 'Campus ESP',
+      roomNumberOrDetails: o?.student?.roomNumberOrDetails || ''
     },
-    {
-      id: 'c2',
-      menuItem: MENU_ITEMS[7], // Jus de Bissap
-      quantity: 1,
-      selectedOptions: { 'Glaçons': 'Bien Glacé' }
-    },
-    {
-      id: 'c3',
-      menuItem: MENU_ITEMS[10], // Thiakry / Degue
-      quantity: 1,
-      selectedOptions: {}
+    items: Array.isArray(o?.items) ? o.items : [],
+    status: o?.status || 'confirmed',
+    createdAt: o?.createdAt || 'Récemment',
+    estimatedDeliveryTime: o?.estimatedDeliveryTime || 'En cours',
+    totalSaved: typeof o?.totalSaved === 'number' ? o.totalSaved : 0,
+    qrCodeData: o?.qrCodeData || '',
+    deliveryAgent: o?.deliveryAgent || {
+      name: 'Ousmane Sarr',
+      phone: '+221 78 456 78 90',
+      role: 'Livreur Étudiant ESP',
+      avatar: '🚲',
+      transport: 'Livraison Vélo Express'
     }
-  ],
-  status: 'delivering',
-  createdAt: '09/08/2026 à 12:15',
-  estimatedDeliveryTime: 'En cours',
-  totalSaved: 4100,
-  qrCodeData: 'ESP-VALIDATED-2026-8912',
-  deliveryAgent: {
-    name: 'Moussa Diop',
-    phone: '+221 77 654 32 10',
-    role: 'Livreur Étudiant ESP (DIC2)',
-    avatar: '🚲',
-    transport: 'Vélo Express Campus'
-  }
-};
+  };
+}
 
-const SAMPLE_ARCHIVED_ORDER_1: Order = {
-  id: 'order-demo-archived-1',
-  orderNumber: '#ESP-2026-4022',
-  student: {
-    fullName: 'Mamadou Ndiaye',
-    email: 'm.ndiaye@esp.sn',
-    studentId: 'ESP-2026-9812',
-    department: 'Génie Informatique (DGI)',
-    level: 'DUT 1ère Année (Nouvel Étudiant)',
-    phone: '+221 77 812 34 56',
-    deliveryLocation: 'Pavillon B',
-    roomNumberOrDetails: 'Chambre 22G'
-  },
-  items: [
-    {
-      id: 'arch-1',
-      menuItem: MENU_ITEMS[1], // Yassa Poulet
-      quantity: 1,
-      selectedOptions: { 'Part de poulet': 'Cuisse' }
-    },
-    {
-      id: 'arch-2',
-      menuItem: MENU_ITEMS[7], // Jus de Bissap
-      quantity: 1,
-      selectedOptions: {}
+async function fetchServerOrders(): Promise<Order[] | null> {
+  try {
+    const res = await fetch('/api/orders');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data
+          .filter((o: any) => !o.id?.startsWith('order-demo-'))
+          .map(sanitizeOrder);
+      }
     }
-  ],
-  status: 'delivered',
-  createdAt: '08/08/2026 à 19:45',
-  estimatedDeliveryTime: 'Livrée',
-  totalSaved: 3000,
-  qrCodeData: 'ESP-VALIDATED-2026-4022',
-  deliveryAgent: {
-    name: 'Awa Faye',
-    phone: '+221 77 111 22 33',
-    role: 'Livreuse BDE ESP',
-    avatar: '🛵',
-    transport: 'Scooter Campus'
+  } catch {
+    // Network or server unreachable, fallback to localStorage
   }
-};
+  return null;
+}
 
-const SAMPLE_ARCHIVED_ORDER_2: Order = {
-  id: 'order-demo-archived-2',
-  orderNumber: '#ESP-2026-3109',
-  student: {
-    fullName: 'Mamadou Ndiaye',
-    email: 'm.ndiaye@esp.sn',
-    studentId: 'ESP-2026-9812',
-    department: 'Génie Informatique (DGI)',
-    level: 'DUT 1ère Année (Nouvel Étudiant)',
-    phone: '+221 77 812 34 56',
-    deliveryLocation: 'Pavillon A',
-    roomNumberOrDetails: 'Chambre 104'
-  },
-  items: [
-    {
-      id: 'arch-3',
-      menuItem: MENU_ITEMS[3], // Dibi Poulet
-      quantity: 1,
-      selectedOptions: {}
-    },
-    {
-      id: 'arch-4',
-      menuItem: MENU_ITEMS[8], // Jus de Bouye
-      quantity: 1,
-      selectedOptions: {}
-    }
-  ],
-  status: 'delivered',
-  createdAt: '07/08/2026 à 13:10',
-  estimatedDeliveryTime: 'Livrée',
-  totalSaved: 3300,
-  qrCodeData: 'ESP-VALIDATED-2026-3109',
-  deliveryAgent: {
-    name: 'Ousmane Sarr',
-    phone: '+221 78 456 78 90',
-    role: 'Livreur Étudiant ESP',
-    avatar: '🚲',
-    transport: 'Livraison Vélo Express'
+async function postServerOrder(order: Order): Promise<boolean> {
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
-};
+}
+
+async function patchServerOrderStatus(orderId: string, newStatus: DeliveryStatus): Promise<boolean> {
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, newStatus })
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
 
 export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -161,6 +105,41 @@ export default function App() {
   const [isMenuLoading, setIsMenuLoading] = useState(false);
   const [isFormulaCompleteModalOpen, setIsFormulaCompleteModalOpen] = useState(false);
   const [stepFeedback, setStepFeedback] = useState<{ message: string; type: string } | null>(null);
+
+  // Admin Account Authentication State (Login credentials: admin / adminsekou)
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('esp_admin_auth') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [isAdminLoginModalOpen, setIsAdminLoginModalOpen] = useState(false);
+
+  const handleAdminLoginSuccess = () => {
+    setIsAdminAuthenticated(true);
+    try {
+      localStorage.setItem('esp_admin_auth', 'true');
+    } catch (e) {}
+    setIsAdminLoginModalOpen(false);
+    setActiveTab('admin');
+    setStepFeedback({
+      message: '🔐 Connecté avec succès en tant qu\'administrateur ESP !',
+      type: 'success'
+    });
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false);
+    try {
+      localStorage.removeItem('esp_admin_auth');
+    } catch (e) {}
+    setActiveTab('menu');
+    setStepFeedback({
+      message: 'Déconnexion réussie de l\'espace administrateur.',
+      type: 'info'
+    });
+  };
 
   // Derived 3 formula slot items (1 Fast Food, 1 Accompagnant, 1 Dessert)
   const fastFoodItem = cartItems.find(i => i.menuItem.category === 'fastfood');
@@ -209,7 +188,11 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) {
+          return parsed
+            .filter((o: any) => !o.id?.startsWith('order-demo-'))
+            .map(sanitizeOrder);
+        }
       } catch (e) {
         console.error('Failed to parse saved orders', e);
       }
@@ -217,12 +200,110 @@ export default function App() {
     return [];
   });
 
+  // Global campus orders state for admin history & live tracking (Real data only, NO fake examples)
+  const [allCampusOrders, setAllCampusOrders] = useState<Order[]>(() => {
+    const saved = localStorage.getItem('esp_all_restaurant_orders');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Filtrer systématiquement tout ancien faux exemple pour ne conserver QUE les commandes réelles
+          return parsed
+            .filter((o: any) => !o.id?.startsWith('order-demo-'))
+            .map(sanitizeOrder);
+        }
+      } catch (e) {
+        console.error('Failed to parse all orders', e);
+      }
+    }
+    return [];
+  });
+
+  // Sync allCampusOrders to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('esp_all_restaurant_orders', JSON.stringify(allCampusOrders));
+    } catch (e) {
+      console.error('Failed to save all orders', e);
+    }
+  }, [allCampusOrders]);
+
+  // Synchronisation en direct avec le serveur backend et entre onglets/utilisateurs
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncWithServer = async () => {
+      const serverOrders = await fetchServerOrders();
+      if (serverOrders && isMounted) {
+        setAllCampusOrders(prev => {
+          // Fusionner avec priorité aux commandes reçues du serveur
+          const map = new Map<string, Order>();
+          serverOrders.forEach(o => map.set(o.id, o));
+          prev.forEach(o => {
+            if (!map.has(o.id) && !o.id.startsWith('order-demo-')) {
+              map.set(o.id, o);
+            }
+          });
+          return Array.from(map.values());
+        });
+      }
+    };
+
+    syncWithServer();
+    // Interrogation régulière toutes les 3.5 secondes pour voir les commandes passées par d'autres appareils
+    const timer = setInterval(syncWithServer, 3500);
+
+    // Canal BroadcastChannel pour synchronisation immédiate multi-onglets/fenêtres
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel('esp_campus_orders_channel');
+      bc.onmessage = (event) => {
+        if (event.data?.type === 'NEW_ORDER' && event.data.order) {
+          setAllCampusOrders(prev => {
+            if (prev.some(o => o.id === event.data.order.id)) return prev;
+            return [event.data.order, ...prev];
+          });
+        } else if (event.data?.type === 'STATUS_UPDATED') {
+          setAllCampusOrders(prev =>
+            prev.map(o => o.id === event.data.orderId ? { ...o, status: event.data.newStatus } : o)
+          );
+        }
+      };
+    } catch {}
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'esp_all_restaurant_orders' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed)) {
+            setAllCampusOrders(
+              parsed
+                .filter(o => !o.id?.startsWith('order-demo-'))
+                .map(sanitizeOrder)
+            );
+          }
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      isMounted = false;
+      clearInterval(timer);
+      if (bc) bc.close();
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   const [activeOrder, setActiveOrder] = useState<Order | null>(() => {
     const saved = localStorage.getItem('esp_student_orders');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed[0];
+        if (Array.isArray(parsed)) {
+          const realOrders = parsed.filter((o: any) => !o.id?.startsWith('order-demo-'));
+          if (realOrders.length > 0) return realOrders[0];
+        }
       } catch (e) {}
     }
     return null;
@@ -250,13 +331,6 @@ export default function App() {
 
   // Derive active pending order (non-delivered)
   const activePendingOrder = orders.find(o => o.status !== 'delivered') || null;
-
-  // Load sample demo orders for testing
-  const handleLoadDemoOrders = () => {
-    const demoOrders = [SAMPLE_ORDER, SAMPLE_ARCHIVED_ORDER_1, SAMPLE_ARCHIVED_ORDER_2];
-    setOrders(demoOrders);
-    setActiveOrder(SAMPLE_ORDER);
-  };
 
   // Edit a pending order before final validation/delivery
   const handleEditPendingOrder = (orderToEdit: Order) => {
@@ -492,19 +566,40 @@ export default function App() {
     };
 
     setOrders(prev => [newOrder, ...prev]);
+    setAllCampusOrders(prev => [newOrder, ...prev]);
     setActiveOrder(newOrder);
     setCartItems([]);
     setIsCheckoutOpen(false);
     
+    // Sauvegarder sur le serveur backend pour persistance multi-utilisateurs
+    postServerOrder(newOrder);
+
+    // Diffuser instantanément à tous les onglets ouverts (ex: écran admin)
+    try {
+      const bc = new BroadcastChannel('esp_campus_orders_channel');
+      bc.postMessage({ type: 'NEW_ORDER', order: newOrder });
+      bc.close();
+    } catch {}
+
     // Redirection immédiate vers le reçu officiel avec QR code
     setActiveTab('receipts');
   };
 
   const handleUpdateOrderStatus = (orderId: string, newStatus: DeliveryStatus) => {
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+    setAllCampusOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     if (activeOrder && activeOrder.id === orderId) {
       setActiveOrder(prev => prev ? { ...prev, status: newStatus } : null);
     }
+
+    // Mettre à jour sur le serveur
+    patchServerOrderStatus(orderId, newStatus);
+
+    try {
+      const bc = new BroadcastChannel('esp_campus_orders_channel');
+      bc.postMessage({ type: 'STATUS_UPDATED', orderId, newStatus });
+      bc.close();
+    } catch {}
   };
 
   const categories: { id: Category; label: string; icon: any }[] = [
@@ -536,6 +631,9 @@ export default function App() {
         studentProfile={studentProfile}
         onOpenProfile={() => setIsRegistrationOpen(true)}
         onResetAsNewUser={handleResetAsNewUser}
+        isAdminAuthenticated={isAdminAuthenticated}
+        onOpenAdminLogin={() => setIsAdminLoginModalOpen(true)}
+        onAdminLogout={handleAdminLogout}
       />
 
       {/* Main Container */}
@@ -1012,7 +1110,6 @@ export default function App() {
                 onReorder={handleReorder}
                 onBackToMenu={() => setActiveTab('menu')}
                 onShowActiveReceipt={() => setReceiptsSubTab('current')}
-                onLoadDemoOrders={handleLoadDemoOrders}
               />
             ) : (
               /* SUB-VIEW 2: CURRENT SELECTED RECEIPT */
@@ -1053,14 +1150,43 @@ export default function App() {
 
         {/* VIEW 4: ADMIN RESTO & KITCHEN PANEL */}
         {activeTab === 'admin' && (
-          <AdminPanel
-            orders={orders}
-            onUpdateStatus={handleUpdateOrderStatus}
-          />
+          isAdminAuthenticated ? (
+            <AdminPanel
+              orders={allCampusOrders}
+              onUpdateStatus={handleUpdateOrderStatus}
+              onLogout={handleAdminLogout}
+              onViewOrderReceipt={(order) => {
+                setActiveOrder(order);
+                setActiveTab('receipts');
+              }}
+            />
+          ) : (
+            <div className="max-w-md mx-auto my-12 p-8 bg-white border-2 border-orange-200 rounded-3xl text-center shadow-xl space-y-4 animate-scale-up">
+              <div className="w-16 h-16 rounded-3xl bg-orange-100 text-orange-600 flex items-center justify-center mx-auto shadow-inner">
+                <Lock className="w-8 h-8" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900">Espace Admin Sécurisé</h2>
+              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                Connectez-vous pour consulter l'historique complet de toutes les commandes et effectuer des recherches multi-critères (nom, téléphone, <strong>numéro de chambre</strong>, plats...).
+              </p>
+              <button
+                onClick={() => setIsAdminLoginModalOpen(true)}
+                className="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-black py-3.5 px-6 rounded-2xl shadow-md uppercase tracking-wider text-xs transition-all active:scale-95 flex items-center justify-center gap-2"
+              >
+                <Lock className="w-4 h-4" />
+                <span>Connexion Compte Admin</span>
+              </button>
+            </div>
+          )
         )}
       </main>
 
       {/* MODALS & DRAWERS */}
+      <AdminLoginModal
+        isOpen={isAdminLoginModalOpen}
+        onClose={() => setIsAdminLoginModalOpen(false)}
+        onLoginSuccess={handleAdminLoginSuccess}
+      />
       <StudentRegistrationModal
         isOpen={isRegistrationOpen}
         onSaveProfile={handleSaveStudentProfile}
@@ -1145,7 +1271,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="border-t-2 border-orange-200/60 bg-orange-100/50 py-8 text-xs text-slate-500 mt-auto">
+      <footer className="border-t-2 border-orange-200/60 bg-orange-100/50 pt-8 pb-24 md:pb-8 text-xs text-slate-500 mt-auto">
         <div className="max-w-7xl mx-auto px-4 space-y-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-orange-200/60 pb-4">
             <div className="flex items-center gap-2">
@@ -1172,6 +1298,19 @@ export default function App() {
                 className="hover:text-orange-600 transition-colors flex items-center gap-1"
               >
                 <span>🧾 Mes Reçus</span>
+              </button>
+              <button
+                onClick={() => {
+                  if (isAdminAuthenticated) {
+                    setActiveTab('admin');
+                  } else {
+                    setIsAdminLoginModalOpen(true);
+                  }
+                }}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-3.5 py-1.5 rounded-xl font-black transition-all flex items-center gap-1.5 shadow-xs text-xs active:scale-95"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                <span>Espace Admin</span>
               </button>
             </div>
           </div>

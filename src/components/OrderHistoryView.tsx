@@ -25,7 +25,6 @@ interface OrderHistoryViewProps {
   onReorder: (order: Order) => void;
   onBackToMenu: () => void;
   onShowActiveReceipt: () => void;
-  onLoadDemoOrders?: () => void;
 }
 
 export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
@@ -34,8 +33,7 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
   onSelectOrder,
   onReorder,
   onBackToMenu,
-  onShowActiveReceipt,
-  onLoadDemoOrders
+  onShowActiveReceipt
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'delivered'>('all');
@@ -43,9 +41,9 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
   // Filter orders
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.items.some((i) => i.menuItem.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      (order.orderNumber || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.student?.fullName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.items || []).some((i) => i.menuItem?.name?.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const isDelivered = order.status === 'delivered';
     const matchesStatus =
@@ -259,7 +257,7 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
                         <span>Lieu de Livraison</span>
                       </div>
                       <div className="font-black text-slate-900 mt-1">
-                        Chambre {order.student.roomNumberOrDetails}
+                        Chambre {order.student?.roomNumberOrDetails || 'Campus ESP'}
                       </div>
                     </div>
 
@@ -310,18 +308,10 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <button
               onClick={onBackToMenu}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-black px-6 py-2.5 rounded-2xl text-xs uppercase tracking-wider shadow-md transition-all"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-black px-6 py-2.5 rounded-2xl text-xs uppercase tracking-wider shadow-md transition-all active:scale-95"
             >
               Découvrir le Menu
             </button>
-            {onLoadDemoOrders && orders.length === 0 && (
-              <button
-                onClick={onLoadDemoOrders}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-2xl text-xs uppercase tracking-wider transition-all"
-              >
-                Charger exemple démo
-              </button>
-            )}
           </div>
         </div>
       )}
