@@ -16,6 +16,7 @@ import { ActiveOrderNoticeModal } from './components/ActiveOrderNoticeModal';
 import { ThreeBackground } from './components/ThreeBackground';
 import { OrderHistoryView } from './components/OrderHistoryView';
 import { FlutterExportModal } from './components/FlutterExportModal';
+import { FlutterBottomNavBar } from './components/FlutterBottomNavBar';
 import { MenuGridSkeleton } from './components/MenuCardSkeleton';
 import { FormulaStepper } from './components/FormulaStepper';
 import { FormulaCompletionModal } from './components/FormulaCompletionModal';
@@ -294,6 +295,21 @@ export default function App() {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  // Rafraîchissement manuel et automatique immédiat des commandes serveur
+  const handleRefreshOrders = async () => {
+    const serverOrders = await fetchServerOrders();
+    if (serverOrders) {
+      setAllCampusOrders(serverOrders);
+    }
+  };
+
+  // Dès qu'on bascule sur l'onglet admin, charger immédiatement les dernières commandes
+  useEffect(() => {
+    if (activeTab === 'admin') {
+      handleRefreshOrders();
+    }
+  }, [activeTab]);
 
   const [activeOrder, setActiveOrder] = useState<Order | null>(() => {
     const saved = localStorage.getItem('esp_student_orders');
@@ -1155,6 +1171,7 @@ export default function App() {
               orders={allCampusOrders}
               onUpdateStatus={handleUpdateOrderStatus}
               onLogout={handleAdminLogout}
+              onRefreshOrders={handleRefreshOrders}
               onViewOrderReceipt={(order) => {
                 setActiveOrder(order);
                 setActiveTab('receipts');
@@ -1325,6 +1342,17 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Bottom Navigation Bar (Visible on phone: Menu, Panier, Reçus, Admin) */}
+      <FlutterBottomNavBar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        cartItemCount={totalCartCount}
+        onOpenCart={() => setIsCartOpen(true)}
+        hasActiveOrder={!!activeOrder}
+        isAdminAuthenticated={isAdminAuthenticated}
+        onOpenAdminLogin={() => setIsAdminLoginModalOpen(true)}
+      />
     </div>
   );
 }

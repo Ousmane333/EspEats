@@ -54,13 +54,13 @@ export const ReceiptView: React.FC<ReceiptViewProps> = ({
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const effectiveStudent = {
-    fullName: order.student?.fullName || studentProfile?.fullName || 'Étudiant ESP',
-    studentId: order.student?.studentId || studentProfile?.studentId || 'ESP-2026',
-    department: order.student?.department || studentProfile?.department || '',
-    level: order.student?.level || studentProfile?.level || '',
-    phone: order.student?.phone || studentProfile?.phone || '+221 77 123 45 67',
-    deliveryLocation: order.student?.deliveryLocation || studentProfile?.deliveryLocation || '',
-    roomNumberOrDetails: order.student?.roomNumberOrDetails || studentProfile?.roomNumberOrDetails || ''
+    fullName: order?.student?.fullName || studentProfile?.fullName || 'Étudiant ESP',
+    studentId: order?.student?.studentId || studentProfile?.studentId || 'ESP-2026',
+    department: order?.student?.department || studentProfile?.department || '',
+    level: order?.student?.level || studentProfile?.level || '',
+    phone: order?.student?.phone || studentProfile?.phone || '+221 77 123 45 67',
+    deliveryLocation: order?.student?.deliveryLocation || studentProfile?.deliveryLocation || '',
+    roomNumberOrDetails: order?.student?.roomNumberOrDetails || studentProfile?.roomNumberOrDetails || ''
   };
 
   const handlePrint = () => {

@@ -39,7 +39,8 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'delivered'>('all');
 
   // Filter orders
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = (orders || []).filter((order) => {
+    if (!order) return false;
     const matchesSearch =
       (order.orderNumber || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (order.student?.fullName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,7 +57,7 @@ export const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({
     return matchesSearch && matchesStatus;
   });
 
-  const totalSavedAllOrders = orders.reduce((sum, o) => sum + o.totalSaved, 0);
+  const totalSavedAllOrders = (orders || []).reduce((sum, o) => sum + (o?.totalSaved || 0), 0);
 
   const getStatusBadge = (status: Order['status']) => {
     switch (status) {

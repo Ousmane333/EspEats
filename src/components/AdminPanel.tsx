@@ -11,21 +11,30 @@ interface AdminPanelProps {
   onUpdateStatus: (orderId: string, newStatus: DeliveryStatus) => void;
   onLogout?: () => void;
   onViewOrderReceipt?: (order: Order) => void;
+  onRefreshOrders?: () => void;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ 
-  orders, 
+  orders = [], 
   onUpdateStatus, 
   onLogout,
-  onViewOrderReceipt
+  onViewOrderReceipt,
+  onRefreshOrders
 }) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedOrderDetails, setSelectedOrderDetails] = useState<Order | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Safe list of orders
+  const safeOrders = useMemo(() => {
+    return Array.isArray(orders) ? orders.filter((o): o is Order => !!o && typeof o === 'object') : [];
+  }, [orders]);
 
   // Advanced multi-criteria search filtering
   const filteredOrders = useMemo(() => {
-    return orders.filter(o => {
+    return safeOrders.filter(o => {
+      if (!o) return false;
+
       // 1. Status filter
       const matchesStatus = filterStatus === 'all' || o.status === filterStatus;
       if (!matchesStatus) return false;
@@ -43,7 +52,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       const department = (o.student?.department || '').toLowerCase();
       const agentName = (o.deliveryAgent?.name || '').toLowerCase();
       const agentPhone = (o.deliveryAgent?.phone || '').toLowerCase();
-      const itemsNames = (o.items || []).map(it => it.menuItem?.name?.toLowerCase() || '').join(' ');
+      const itemsNames = (o.items || []).map(it => it?.menuItem?.name?.toLowerCase() || '').join(' ');
 
       return (
         studentName.includes(term) ||
@@ -58,17 +67,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         itemsNames.includes(term)
       );
     });
-  }, [orders, filterStatus, searchTerm]);
+  }, [safeOrders, filterStatus, searchTerm]);
 
   // Statistics
   const stats = useMemo(() => {
-    const total = orders.length;
-    const confirmed = orders.filter(o => o.status === 'confirmed').length;
-    const preparing = orders.filter(o => o.status === 'preparing').length;
-    const delivering = orders.filter(o => o.status === 'delivering').length;
-    const delivered = orders.filter(o => o.status === 'delivered').length;
+    const total = safeOrders.length;
+    const confirmed = safeOrders.filter(o => o?.status === 'confirmed').length;
+    const preparing = safeOrders.filter(o => o?.status === 'preparing').length;
+    const delivering = safeOrders.filter(o => o?.status === 'delivering').length;
+    const delivered = safeOrders.filter(o => o?.status === 'delivered').length;
     return { total, confirmed, preparing, delivering, delivered };
-  }, [orders]);
+  }, [safeOrders]);
+
+  const handleManualRefresh = () => {
+    if (onRefreshOrders) {
+      setIsRefreshing(true);
+      onRefreshOrders();
+      setTimeout(() => setIsRefreshing(false), 600);
+    }
+  };
 
   const getStatusBadge = (status: DeliveryStatus) => {
     switch (status) {
@@ -128,10 +145,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </div>
 
         {/* Top actions & Logout */}
-        <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
-          <div className="bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-200 text-xs font-black text-orange-900">
-            {orders.length} commande{orders.length > 1 ? 's' : ''} au total
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+          {/* Live Sync Status indicator */}
+          <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-xl text-[11px] font-extrabold text-emerald-800">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Synchro Directe Mondiale</span>
           </div>
+
+          <div className="bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-200 text-xs font-black text-orange-900">
+            {safeOrders.length} commande{safeOrders.length > 1 ? 's' : ''} au total
+          </div>
+
+          {onRefreshOrders && (
+            <button
+              onClick={handleManualRefresh}
+              disabled={isRefreshing}
+              className="bg-white hover:bg-orange-50 text-orange-700 font-black px-3 py-2 rounded-xl text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 border border-orange-200 shadow-2xs active:scale-95 disabled:opacity-60"
+              title="Actualiser les commandes depuis le serveur"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-orange-600' : ''}`} />
+              <span className="hidden sm:inline">Actualiser</span>
+            </button>
+          )}
 
           {onLogout && (
             <button
@@ -273,7 +308,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* Orders List */}
       <div className="bg-white border-2 border-orange-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl">
-        {orders.length === 0 ? (
+        {safeOrders.length === 0 ? (
           <div className="p-12 text-center space-y-3">
             <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mx-auto shadow-inner">
               <PackageCheck className="w-7 h-7" />

@@ -34,6 +34,12 @@ function ordersApiPlugin(): Plugin {
   return {
     name: 'campus-orders-api',
     configureServer(server) {
+      server.middlewares.use('/api/health', (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.statusCode = 200;
+        res.end(JSON.stringify({ status: 'ok', ordersCount: getOrders().length }));
+      });
+
       server.middlewares.use('/api/orders', (req, res) => {
         const method = req.method || 'GET';
 
